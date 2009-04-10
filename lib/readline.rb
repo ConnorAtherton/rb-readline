@@ -69,13 +69,15 @@ module Readline
       ary = proc.call(text)
       if ary.class != Array
          ary = Array(ary)
+      else
+	 ary.compact!
       end
 
       matches = ary.length
       return nil if (matches == 0)
       result = Array.new(matches+2)
       for i in 0 ... matches
-         result[i+1] = ary[i]
+         result[i+1] = ary[i].dup
       end
       result[matches+1] = nil
 

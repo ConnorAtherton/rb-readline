@@ -1105,9 +1105,7 @@ module RbReadline
    @current_readline_init_include_level = 0
    @current_readline_init_lineno = 0
 
-   if ENV["HOME"].nil?
-      ENV["HOME"] = ENV["HOMEDRIVE"]+ENV["HOMEPATH"]
-   end
+   ENV["HOME"] ||= ENV["HOMEDRIVE"]+ENV["HOMEPATH"]
 
    @directory = nil
    @filename = nil
@@ -1206,8 +1204,8 @@ module RbReadline
          end
       end
 
-      if (entry.nil?)
-         if (@directory)
+      if entry.nil?
+         if @directory
             @directory.close
             @directory = nil
          end
@@ -1257,7 +1255,7 @@ module RbReadline
          break if (namelen == 0 || entry.name =~ /^#{username}/ )
       end
 
-      if (entry.nil?)
+      if entry.nil?
          Etc.endpwent()
          return nil
       else
@@ -1627,7 +1625,7 @@ module RbReadline
          @_rl_last_c_pos = 0
       else
          if(@_rl_term_up)
-             @rl_outstream.write(@_rl_term_up*(-delta))
+            @rl_outstream.write(@_rl_term_up*(-delta))
          end
       end
       @_rl_last_v_pos = to        # Now TO is here
@@ -1657,9 +1655,15 @@ module RbReadline
    end
 
    def rl_clear_signals()
+      if Signal.list['WINCH']
+         trap "WINCH",@def_proc
+      end
    end
 
    def rl_set_signals()
+      if Signal.list['WINCH']
+         @def_proc = trap "WINCH",Proc.new{rl_sigwinch_handler(0)}
+      end
    end
 
    # Current implementation:
@@ -1901,9 +1905,7 @@ module RbReadline
    #   type of the object pointed to.  One of ISFUNC (function), ISKMAP (keymap),
    #   or ISMACR (macro).
    def rl_function_of_keyseq(keyseq, map, type)
-      if (map.nil?)
-         map = @_rl_keymap
-      end
+      map ||= @_rl_keymap
       map[keyseq]
    end
 
@@ -1968,18 +1970,14 @@ module RbReadline
       @_rl_term_clrpag = @_rl_term_cr = @_rl_term_clreol = nil
       tty = @rl_instream ? @rl_instream.fileno : 0
 
-      if (term.nil?)
+      if term.nil?
          term = "dumb"
          @_rl_bind_stty_chars = false
       end
 
-      if (@term_string_buffer.nil?)
-         @term_string_buffer = 0.chr * 2032
-      end
+      @term_string_buffer ||= 0.chr * 2032
 
-      if (@term_buffer.nil?)
-         @term_buffer = 0.chr * 4080
-      end
+      @term_buffer ||= 0.chr * 4080
 
       buffer = @term_string_buffer
 
@@ -2025,9 +2023,7 @@ module RbReadline
 
       get_term_capabilities(buffer)
 
-      if (@_rl_term_cr.nil?)
-         @_rl_term_cr = "\r"
-      end
+      @_rl_term_cr ||= "\r"
       @_rl_term_autowrap = !!(tgetflag("am") && tgetflag("xn"))
 
       # Allow calling application to set default height and width, using
@@ -2496,13 +2492,9 @@ module RbReadline
    # Initialize the entire state of the world.
    def readline_initialize_everything()
       # Set up input and output if they are not already set up.
-      if (@rl_instream.nil?)
-         @rl_instream = $stdin
-      end
+      @rl_instream ||= $stdin
 
-      if (@rl_outstream.nil?)
-         @rl_outstream = $stdout
-      end
+      @rl_outstream ||= $stdout
 
       # Bind _rl_in_stream and _rl_out_stream immediately.  These values
       #   may change, but they may also be used before readline_internal ()
@@ -2511,14 +2503,10 @@ module RbReadline
       @_rl_out_stream = @rl_outstream
 
       # Allocate data structures.
-      if (@rl_line_buffer.nil?)
-         @rl_line_buffer = 0.chr * DEFAULT_BUFFER_SIZE
-      end
+      @rl_line_buffer ||= 0.chr * DEFAULT_BUFFER_SIZE
 
       # Initialize the terminal interface.
-      if (@rl_terminal_name.nil?)
-         @rl_terminal_name = ENV["TERM"]
-      end
+      @rl_terminal_name ||= ENV["TERM"]
       _rl_init_terminal_io(@rl_terminal_name)
 
       # Bind tty characters to readline functions.
@@ -2550,9 +2538,7 @@ module RbReadline
 
       # If the completion parser's default word break characters haven't
       #   been set yet, then do so now.
-      if (@rl_completer_word_break_characters.nil?)
-         @rl_completer_word_break_characters = @rl_basic_word_break_characters
-      end
+      @rl_completer_word_break_characters ||= @rl_basic_word_break_characters
    end
 
    def _rl_init_line_state()
@@ -2589,7 +2575,7 @@ module RbReadline
    #   increased.  If the lines have already been allocated, this ensures that
    #   they can hold at least MINSIZE characters.
    def init_line_structures(minsize)
-      if (@invisible_line.nil?)	# initialize it
+      if @invisible_line.nil?	# initialize it
          if (@line_size < minsize)
             @line_size = minsize
          end
@@ -2606,7 +2592,7 @@ module RbReadline
       @visible_line[minsize,@line_size-minsize] = 0.chr * (@line_size-minsize)
       @invisible_line[minsize,@line_size-minsize] = 1.chr * (@line_size-minsize)
 
-      if (@vis_lbreaks.nil?)
+      if @vis_lbreaks.nil?
          @inv_lbreaks = []
          @vis_lbreaks = []
          @_rl_wrapped_line = []
@@ -3088,13 +3074,11 @@ module RbReadline
 
    # Basic redisplay algorithm.
    def rl_redisplay()
-      return if (!@readline_echoing_p)
+      return if !@readline_echoing_p
 
       _rl_wrapped_multicolumn = 0
 
-      if (@rl_display_prompt.nil?)
-         @rl_display_prompt = ""
-      end
+      @rl_display_prompt ||= ""
 
       if (@invisible_line.nil? || @vis_lbreaks.nil?)
          init_line_structures(0)
@@ -3162,7 +3146,7 @@ module RbReadline
          @wrap_offset = @local_prompt_len - @prompt_visible_length
       else
          prompt_this_line = @rl_display_prompt.rindex("\n")
-         if (prompt_this_line.nil?)
+         if prompt_this_line.nil?
             prompt_this_line = 0
          else
             prompt_this_line+=1
@@ -3288,10 +3272,10 @@ module RbReadline
       while(_in < @rl_end)
 
          c = @rl_line_buffer[_in,1]
-		 if(c == 0.chr)
-		   @rl_end = _in
-		   break
-		 end
+         if(c == 0.chr)
+            @rl_end = _in
+            break
+         end
          if (!@rl_byte_oriented)
             case @encoding
             when 'U'
@@ -3802,7 +3786,7 @@ module RbReadline
       index = string.index(0.chr)
       str = index ? string[0,index] : string
       width = 0
-      
+
       case @encoding
       when 'N'
          return (_end - start)
@@ -3841,7 +3825,7 @@ module RbReadline
 
       # If the prompt contains newlines, take the last tail.
       prompt_last_line = rl_prompt.rindex("\n")
-      if (prompt_last_line.nil?)
+      if prompt_last_line.nil?
          prompt_last_line = @rl_prompt
       else
          prompt_last_line = @rl_prompt[prompt_last_line..-1]
@@ -4385,7 +4369,11 @@ module RbReadline
       end
 
       def rl_getc(stream)
-         c = stream.read(1)
+         begin
+            c = stream.read(1)
+         rescue Errno::EINTR
+            c = rl_getc(stream)
+         end
          return c ? c : EOF
       end
 
@@ -4923,7 +4911,7 @@ module RbReadline
       last = -1
       for i in 0 ... @history_length
          entry = @the_history[i]
-         if (entry.nil?)
+         if entry.nil?
             next
          end
          if (entry.data == old)
@@ -5243,7 +5231,7 @@ module RbReadline
 
    # Save the current line in _rl_saved_line_for_history.
    def rl_maybe_save_line()
-      if (@_rl_saved_line_for_history.nil?)
+      if @_rl_saved_line_for_history.nil?
          @_rl_saved_line_for_history = Struct.new(:line,:timestamp,:data).new
          @_rl_saved_line_for_history.line = @rl_line_buffer.dup
          @_rl_saved_line_for_history.timestamp = nil
@@ -5321,7 +5309,7 @@ module RbReadline
       temp = old_temp = nil
       while (count>0)
          temp = previous_history()
-         if (temp.nil?)
+         if temp.nil?
             break
          end
          old_temp = temp
@@ -5334,7 +5322,7 @@ module RbReadline
          temp = old_temp
       end
 
-      if (temp.nil?)
+      if temp.nil?
          rl_ding()
       else
          rl_replace_from_history(temp, 0)
@@ -5375,13 +5363,13 @@ module RbReadline
       temp = nil
       while (count>0)
          temp = next_history()
-         if (temp.nil?)
+         if temp.nil?
             break
          end
          count -= 1
       end
 
-      if (temp.nil?)
+      if temp.nil?
          rl_maybe_unsave_line()
       else
          rl_replace_from_history(temp, 0)
@@ -5625,7 +5613,7 @@ module RbReadline
       if (@rl_erase_empty_line && @rl_point == 0 && @rl_end == 0)
          return 0
       end
-      if (@readline_echoing_p)
+      if @readline_echoing_p
          _rl_update_final()
       end
       0
@@ -5784,7 +5772,7 @@ module RbReadline
       # First, find the slot to work with.
       if (!@_rl_last_command_was_kill)
          # Get a new slot.
-         if (@rl_kill_ring.nil?)
+         if @rl_kill_ring.nil?
             # If we don't have any defined, then make one.
             @rl_kill_ring_length = 1
             @rl_kill_ring = Array.new(@rl_kill_ring_length+1)
@@ -6006,7 +5994,7 @@ module RbReadline
          return if (@history_length == 0)
          @the_history.shift
       else
-         if (@the_history.nil?)
+         if @the_history.nil?
             @the_history = []
             @history_length = 1
          else
@@ -6043,10 +6031,10 @@ module RbReadline
       quote_char = 0.chr
 
       brkchars = nil
-      if (@rl_completion_word_break_hook)
+      if @rl_completion_word_break_hook
          brkchars = send(@rl_completion_word_break_hook)
       end
-      if (brkchars.nil?)
+      if brkchars.nil?
          brkchars = @rl_completer_word_break_characters
       end
       if (@rl_completer_quote_characters)
@@ -6201,7 +6189,7 @@ module RbReadline
    def postprocess_matches(matchesp, matching_filenames)
       matches = matchesp
 
-      return 0 if (matches.nil?)
+      return 0 if matches.nil?
 
       # It seems to me that in all the cases we handle we would like
       #   to ignore duplicate possiblilities.  Scan for the text to
@@ -6569,7 +6557,7 @@ module RbReadline
       _rl_move_vert(@_rl_vis_botlin)
 
       # Handle simple case first.  What if there is only one answer?
-      if (matches[1].nil?)
+      if matches[1].nil?
          temp = printable_part(matches[0])
          rl_crlf()
          print_filename(temp, matches[0])
@@ -6660,7 +6648,7 @@ module RbReadline
       #   being completed.
       nontrivial_lcd = !!(matches && text != matches[0])
       text = nil
-      if (matches.nil?)
+      if matches.nil?
          rl_ding()
          saved_line_buffer = nil
          @completion_changed_buffer = false
@@ -6862,7 +6850,7 @@ module RbReadline
    #   to self-insert.  Call this before saving the current terminal special
    #   chars with save_tty_chars().  This only works on POSIX termios or termio
    #   systems.
-   def rl_tty_unset_default_bindings (kmap)
+   def rl_tty_unset_default_bindings(kmap)
       # Don't bother before we've saved the tty special chars at least once.
       return if (!rl_isstate(RL_STATE_TTYCSAVED))
 
@@ -7182,7 +7170,7 @@ module RbReadline
 
    def rl_message(msg_buf)
       @rl_display_prompt = msg_buf
-      if (@saved_local_prompt.nil?)
+      if @saved_local_prompt.nil?
          rl_save_prompt()
          @msg_saved_prompt = true
       end
@@ -7278,7 +7266,7 @@ module RbReadline
 
    # Yank back the last killed text.  This ignores arguments.
    def rl_yank(count, ignore)
-      if (@rl_kill_ring.nil?)
+      if @rl_kill_ring.nil?
          _rl_abort_internal()
          return -1
       end
@@ -7324,7 +7312,7 @@ module RbReadline
       end
       entry = previous_history()
       history_set_pos(pos)
-      if (entry.nil?)
+      if entry.nil?
          rl_ding()
          return -1
       end
@@ -7446,7 +7434,7 @@ module RbReadline
    def rl_do_undo()
       start = _end = waiting_for_begin = 0
       begin
-         return 0 if (@rl_undo_list.nil?)
+         return 0 if @rl_undo_list.nil?
 
          @_rl_doing_an_undo = true
          rl_setstate(RL_STATE_UNDOING)
@@ -7550,7 +7538,7 @@ module RbReadline
 
    # Revert the current line to its previous state.
    def rl_revert_line(count, key)
-      if (@rl_undo_list.nil?)
+      if @rl_undo_list.nil?
          rl_ding()
       else
          while (@rl_undo_list)
@@ -7950,7 +7938,7 @@ module RbReadline
       #   strings we need before they're restored.  We want the unexpanded
       #   portion of the prompt string after any final newline.
       _p = @rl_prompt ? @rl_prompt.rindex("\n") : nil
-      if (_p.nil?)
+      if _p.nil?
          len = (@rl_prompt && @rl_prompt.length>0 ) ? @rl_prompt.length : 0
          if (len>0)
             pmt = @rl_prompt.dup
@@ -8055,7 +8043,7 @@ module RbReadline
       #   start from the saved history position.  If there's no previous search
       #   string, punt.
       if (@rl_point == 0)
-         if (@noninc_search_string.nil?)
+         if @noninc_search_string.nil?
             rl_ding()
             rl_restore_prompt()
             rl_unsetstate(RL_STATE_NSEARCH)
@@ -8504,8 +8492,8 @@ module RbReadline
       when 'U'
          len = src.scan(/./u)[0].to_s.length
       when 'X'
-            src = src.dup.force_encoding(@encoding_name)
-	    len = src.valid_encoding? ? src[0].bytesize : 0
+         src = src.dup.force_encoding(@encoding_name)
+         len = src.valid_encoding? ? src[0].bytesize : 0
       else
          len = 1
       end
@@ -8564,6 +8552,74 @@ module RbReadline
       end
       1
    end
+
+   # Redraw the last line of a multi-line prompt that may possibly contain
+   # terminal escape sequences.  Called with the cursor at column 0 of the
+   # line to draw the prompt on.
+   def redraw_prompt(t)
+      oldp = @rl_display_prompt
+      rl_save_prompt()
+
+      @rl_display_prompt = t
+      @local_prompt,@prompt_visible_length,@prompt_last_invisible,@prompt_invis_chars_first_line,@prompt_physical_chars =
+      expand_prompt(t)
+      @local_prompt_prefix = nil
+      @local_prompt_len = @local_prompt ? @local_prompt.length : 0
+
+      rl_forced_update_display()
+
+      @rl_display_prompt = oldp
+      rl_restore_prompt()
+   end
+
+   # Redisplay the current line after a SIGWINCH is received.
+   def _rl_redisplay_after_sigwinch()
+      # Clear the current line and put the cursor at column 0.  Make sure
+      #   the right thing happens if we have wrapped to a new screen line.
+      if @_rl_term_cr
+         @rl_outstream.write(@_rl_term_cr)
+         @_rl_last_c_pos = 0
+         if @_rl_term_clreol
+            @rl_outstream.write(@_rl_term_clreol)
+         else
+            space_to_eol(@_rl_screenwidth)
+            @rl_outstream.write(@_rl_term_cr)
+         end
+
+         if @_rl_last_v_pos > 0
+            _rl_move_vert(0)
+         end
+      else
+         rl_crlf()
+      end
+
+      # Redraw only the last line of a multi-line prompt.
+      t = @rl_display_prompt.index("\n")
+      if t
+         redraw_prompt(@rl_display_prompt[(t+1)..-1])
+      else
+         rl_forced_update_display()
+      end
+   end
+
+   def rl_resize_terminal()
+      if @readline_echoing_p
+         _rl_get_screen_size(@rl_instream.fileno, 1)
+         if @rl_redisplay_function != :rl_redisplay
+            rl_forced_update_display()
+         else
+            _rl_redisplay_after_sigwinch()
+         end
+      end
+   end
+
+   def rl_sigwinch_handler(sig)
+      rl_setstate(RL_STATE_SIGHANDLER)
+      rl_resize_terminal()
+      rl_unsetstate(RL_STATE_SIGHANDLER)
+   end
+
+
 
    module_function :rl_attempted_completion_function,:rl_deprep_term_function,
    :rl_event_hook,:rl_attempted_completion_over,:rl_basic_quote_characters,
