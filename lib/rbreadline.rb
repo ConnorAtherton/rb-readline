@@ -1239,7 +1239,7 @@ module RbReadline
    #   TEXT contains a partial username preceded by a random
    #   character (usually `~').
    def rl_username_completion_function(text, state)
-      return nil if RUBY_PLATFORM =~ /win32|mingw32/
+      return nil if RUBY_PLATFORM =~ /mswin|mingw/
 
       if (state == 0)
          first_char = text[0]
@@ -2102,7 +2102,7 @@ module RbReadline
          filename = SYS_INPUTRC
       end
 
-      if RUBY_PLATFORM =~ /win32|mingw32/
+      if RUBY_PLATFORM =~ /mswin|mingw/
          return 0 if (_rl_read_init_file(filename, 0) == 0)
          filename = "~/_inputrc"
       end
@@ -2450,7 +2450,7 @@ module RbReadline
       xkeymap = @_rl_keymap
       @_rl_keymap = map
 
-      if RUBY_PLATFORM =~ /win32|mingw32/
+      if RUBY_PLATFORM =~ /mswin|mingw/
          rl_bind_keyseq_if_unbound("\340H", :rl_get_previous_history) # Up
          rl_bind_keyseq_if_unbound("\340P", :rl_get_next_history) # Down
          rl_bind_keyseq_if_unbound("\340M", :rl_forward_char)  # Right
@@ -4294,7 +4294,7 @@ module RbReadline
    begin
       # Cygwin will look like Windows, but we want to treat it like a Posix OS:
       raise LoadError, "Cygwin is a Posix OS." if RUBY_PLATFORM =~ /\bcygwin\b/i
-      raise LoadError, "Not Windows" if RUBY_PLATFORM !~ /win32|mingw32/
+      raise LoadError, "Not Windows" if RUBY_PLATFORM !~ /mswin|mingw/
 
       if RUBY_VERSION < '1.9.1'
          require 'Win32API'
