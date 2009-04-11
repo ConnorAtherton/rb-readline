@@ -7,6 +7,9 @@ module Readline
 
    require 'rbreadline'
    include RbReadline
+   
+   @completion_proc = nil
+   @completion_case_fold = false
 
    def readline(prompt, add_history=nil)
       if $stdin.closed?
@@ -61,7 +64,7 @@ module Readline
 
    def self.readline_attempted_completion_function(text,start,_end)
       proc = @completion_proc
-      return nil if (proc.nil?)
+      return nil if proc.nil?
 
       RbReadline.rl_attempted_completion_over = true
 
@@ -70,7 +73,7 @@ module Readline
       if ary.class != Array
          ary = Array(ary)
       else
-	 ary.compact!
+         ary.compact!
       end
 
       matches = ary.length
