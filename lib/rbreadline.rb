@@ -6558,6 +6558,10 @@ module RbReadline
                wc = string[pos,left-pos].force_encoding(@encoding_name)[0]
                bytes = wc.bytesize
                tempwidth = wc.ord >= 0x1000 ? 2 : 1
+            else
+               wc = string[pos,left-pos].scan(/./)[0]
+               bytes = wc.length
+               tempwidth = wc.length
             end
             clen = bytes
             pos += clen
