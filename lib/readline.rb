@@ -7,19 +7,35 @@ module Readline
 
    require 'rbreadline'
    include RbReadline
-   
+
    @completion_proc = nil
    @completion_case_fold = false
 
+   # Begins an interactive terminal process using +prompt+ as the command
+   # prompt that users see when they type commands. The method returns the
+   # line entered whenever a carriage return is encountered.
+   #
+   # If an +add_history+ argument is provided, commands entered by users are
+   # stored in a history buffer that can be recalled for later use.
+   #
+   # Note that this method depends on $stdin and $stdout both being open.
+   # Because this is meant as an interactive console interface, they should
+   # generally not be redirected.
+   #
+   # Example:
+   #
+   #    loop{ Readline.readline('> ') }
+   #
    def readline(prompt, add_history=nil)
       if $stdin.closed?
-         raise IOError,"stdin closed"
+         raise IOError, "stdin closed"
       end
 
       RbReadline.rl_instream = $stdin
       RbReadline.rl_outstream = $stdout
 
       status = 0
+      
       begin
          buff = RbReadline.readline(prompt)
       rescue Exception => e
@@ -32,17 +48,35 @@ module Readline
       if add_history && buff
          RbReadline.add_history(buff)
       end
+      
       return buff ? buff.dup : nil
    end
 
+   # Sets the input stream (an IO object) for readline interaction. The
+   # default is <tt>$stdin</tt>.
+   #
    def self.input=(input)
       RbReadline.rl_instream = input
    end
 
+   # Sets the output stream (an IO object) for readline interaction. The
+   # default is <tt>$stdout</tt>.
+   #
    def self.output=(output)
       RbReadline.rl_outstream = output
    end
 
+   # Sets the auto-completion procedure (i.e. tab auto-complete).
+   #
+   # The +proc+ argument is typically a Proc object. It must respond to
+   # <tt>.call</tt>, take a single String argument and return an Array of
+   # candidates for completion.
+   #
+   # Example:
+   #
+   #    list = ['search', 'next', 'clear']
+   #    Readline.completion_proc = proc{ |s| list.grep( /^#{Regexp.escape(s)}/) }
+   #    
    def self.completion_proc=(proc)
       unless defined? proc.call
          raise ArgumentError,"argument must respond to `call'"
@@ -50,14 +84,22 @@ module Readline
       @completion_proc = proc
    end
 
+   # Returns the current auto-completion procedure.
+   #
    def self.completion_proc()
       @completion_proc
    end
 
+   # Sets whether or not the completion proc should ignore case sensitivity.
+   # The default is false, i.e. completion procs are case sensitive.
+   #
    def self.completion_case_fold=(bool)
       @completion_case_fold = bool
    end
 
+   # Returns whether or not the completion proc is case sensitive. The
+   # default is false, i.e. completion procs are case sensitive.
+   #
    def self.completion_case_fold()
       @completion_case_fold
    end
@@ -117,16 +159,25 @@ module Readline
       result
    end
 
+   # Sets vi editing mode.
+   #
    def self.vi_editing_mode()
       RbReadline.rl_vi_editing_mode(1,0)
       nil
    end
 
+   # Sets emacs editing mode
+   #
    def self.emacs_editing_mode()
       RbReadline.rl_emacs_editing_mode(1,0)
       nil
    end
 
+   # Sets the character that is automatically appended after the
+   # Readline.completion_proc method is called.
+   #
+   # If +char+ is nil or empty, then a null character is used.
+   #
    def self.completion_append_character=(char)
       if char.nil?
          RbReadline.rl_completion_append_character = ?\0
@@ -137,17 +188,26 @@ module Readline
       end
    end
 
+   # Returns the character that is automatically appended after the
+   # Readline.completion_proc method is called.
+   #
    def self.completion_append_character()
       if RbReadline.rl_completion_append_character == ?\0
          nil
       end
-      return RbReadline.rl_completion_append_character.chr
+      return RbReadline.rl_completion_append_character
    end
 
+   # Sets the character string that signal a break between words for the
+   # completion proc.
+   #
    def self.basic_word_break_characters=(str)
       RbReadline.rl_basic_word_break_characters = str.dup
    end
 
+   # Returns the character string that signal a break between words for the
+   # completion proc. The default is " \t\n\"\\'`@$><=|&{(".
+   #
    def self.basic_word_break_characters()
       if RbReadline.rl_basic_word_break_characters.nil?
          nil
@@ -156,10 +216,16 @@ module Readline
       end
    end
 
+   # Sets the character string that signal the start or end of a word for
+   # the completion proc.
+   #
    def self.completer_word_break_characters=(str)
       RbReadline.rl_completer_word_break_characters = str.dup
    end
 
+   # Returns the character string that signal the start or end of a word for
+   # the completion proc.
+   #
    def self.completer_word_break_characters()
       if RbReadline.rl_completer_word_break_characters.nil?
          nil
@@ -168,10 +234,15 @@ module Readline
       end
    end
 
+   # Sets the list of quote characters that can cause a word break.
+   #
    def self.basic_quote_characters=(str)
       RbReadline.rl_basic_quote_characters = str.dup
    end
 
+   # Returns the list of quote characters that can cause a word break.
+   # The default is "'\"" (single and double quote characters).
+   #
    def self.basic_quote_characters()
       if RbReadline.rl_basic_quote_characters.nil?
          nil
@@ -180,10 +251,16 @@ module Readline
       end
    end
 
+   # Sets the list of characters that can be used to quote a substring of
+   # the line, i.e. a group of characters within quotes.
+   #
    def self.completer_quote_characters=(str)
       RbReadline.rl_completer_quote_characters = str.dup
    end
 
+   # Returns the list of characters that can be used to quote a substring
+   # of the line, i.e. a group of characters inside quotes.
+   #
    def self.completer_quote_characters()
       if RbReadline.rl_completer_quote_characters.nil?
          nil
@@ -192,10 +269,16 @@ module Readline
       end
    end
 
+   # Sets the character string of one or more characters that indicate quotes
+   # for the filename completion of user input.
+   #
    def self.filename_quote_characters=(str)
       RbReadline.rl_filename_quote_characters = str.dup
    end
 
+   # Returns the character string used to indicate quotes for the filename
+   # completion of user input.
+   #
    def self.filename_quote_characters()
       if RbReadline.rl_filename_quote_characters.nil?
          nil
@@ -204,12 +287,25 @@ module Readline
       end
    end
 
+   # The History class encapsulates a history of all commands entered by
+   # users at the prompt, providing an interface for inspection and retrieval
+   # of all commands.
    class History
       extend Enumerable
+      
+      # The History class, stringified in all caps.
+      #--
+      # Why?
+      #
       def self.to_s
          "HISTORY"
       end
 
+      # Returns the command that was entered at the specified +index+
+      # in the history buffer.
+      #
+      # Raises an IndexError if the entry is nil.
+      #
       def self.[](index)
          if index < 0
             index += RbReadline.history_length
@@ -221,6 +317,11 @@ module Readline
          entry.line.dup
       end
 
+      # Sets the command +str+ at the given index in the history buffer.
+      #
+      # You can only replace an existing entry. Attempting to create a new
+      # entry will result in an IndexError.
+      #
       def self.[]=(index,str)
          if index<0
             index += RbReadline.history_length
@@ -232,16 +333,25 @@ module Readline
          str
       end
 
+      # Synonym for Readline.add_history.
+      #
       def self.<<(str)
          RbReadline.add_history(str)
       end
 
+      # Pushes a list of +args+ onto the history buffer.
+      #
       def self.push(*args)
          args.each do |str|
             RbReadline.add_history(str)
          end
       end
-
+      
+      # Internal function that removes the item at +index+ from the history
+      # buffer, performing necessary duplication in the process.
+      #--
+      # TODO: mark private?
+      #
       def rb_remove_history(index)
          entry = RbReadline.remove_history(index)
          if (entry)
@@ -252,6 +362,8 @@ module Readline
          nil
       end
 
+      # Removes and returns the last element from the history buffer.
+      #
       def self.pop()
          if RbReadline.history_length>0
             rb_remove_history(RbReadline.history_length-1)
@@ -260,6 +372,8 @@ module Readline
          end
       end
 
+      # Removes and returns the first element from the history buffer.
+      #
       def self.shift()
          if RbReadline.history_length>0
             rb_remove_history(0)
@@ -268,6 +382,8 @@ module Readline
          end
       end
 
+      # Iterates over each entry in the history buffer.
+      #
       def self.each()
          for i in 0 ... RbReadline.history_length
             entry = RbReadline.history_get(RbReadline.history_base + i)
@@ -277,18 +393,27 @@ module Readline
          self
       end
 
+      # Returns the length of the history buffer.
+      #
       def self.length()
          RbReadline.history_length
       end
 
+      # Synonym for Readline.length.
+      #
       def self.size()
          RbReadline.history_length
       end
 
+      # Returns a bolean value indicating whether or not the history buffer
+      # is empty.
+      #
       def self.empty?()
          RbReadline.history_length == 0
       end
 
+      # Deletes an entry from the histoyr buffer at the specified +index+.
+      #
       def self.delete_at(index)
          if index < 0
             i += RbReadline.history_length
@@ -303,6 +428,10 @@ module Readline
 
    HISTORY = History
 
+   # The Fcomp class provided to encapsulate typical filename completion
+   # procedure. You will not typically use this directly, but will instead
+   # use the Readline::FILENAME_COMPLETION_PROC.
+   #
    class Fcomp
       def self.call(str)
          matches = RbReadline.rl_completion_matches(str,
@@ -328,6 +457,13 @@ module Readline
 
    FILENAME_COMPLETION_PROC = Fcomp
 
+   # The Ucomp class provided to encapsulate typical filename completion
+   # procedure. You will not typically use this directly, but will instead
+   # use the Readline::USERNAME_COMPLETION_PROC.
+   #
+   # Note that this feature currently only works on Unix systems since it
+   # ultimately uses the Etc module to iterate over a list of users.
+   #
    class Ucomp
       def self.call(str)
          matches = RbReadline.rl_completion_matches(str,

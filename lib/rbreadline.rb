@@ -15,7 +15,7 @@ module RbReadline
 
    RL_LIBRARY_VERSION = "5.2"
    RL_READLINE_VERSION  = 0x0502
-   RB_REALINE_VERSION = "0.1.0"
+   RB_READLINE_VERSION = "0.1.0"
 
    EOF = "\xFF"
    ESC = "\C-["
@@ -43,10 +43,10 @@ module RbReadline
 
    # Possible history errors passed to hist_error.
    EVENT_NOT_FOUND = 0
-   BAD_WORD_SPEC	= 1
-   SUBST_FAILED	= 2
-   BAD_MODIFIER	= 3
-   NO_PREV_SUBST	= 4
+   BAD_WORD_SPEC  = 1
+   SUBST_FAILED   = 2
+   BAD_MODIFIER   = 3
+   NO_PREV_SUBST  = 4
 
    # Possible definitions for history starting point specification.
    ANCHORED_SEARCH = 1
@@ -71,14 +71,14 @@ module RbReadline
    MULT_MATCH    =  2
 
    # Callback data for reading numeric arguments
-   NUM_SAWMINUS	= 0x01
+   NUM_SAWMINUS   = 0x01
    NUM_SAWDIGITS = 0x02
-   NUM_READONE	= 0x04
+   NUM_READONE = 0x04
 
    # A context for reading key sequences longer than a single character when
    #   using the callback interface.
    KSEQ_DISPATCHED = 0x01
-   KSEQ_SUBSEQ	= 0x02
+   KSEQ_SUBSEQ = 0x02
    KSEQ_RECURSIVE = 0x04
 
    # Possible state values for rl_readline_state
@@ -120,18 +120,18 @@ module RbReadline
 
    # Definitions used when searching the line for characters.
    # NOTE: it is necessary that opposite directions are inverses
-   FTO	=  1		# forward to
-   BTO	= -1		# backward to
-   FFIND	=  2		# forward find
-   BFIND	= -2		# backward find
+   FTO   =  1     # forward to
+   BTO   = -1     # backward to
+   FFIND =  2     # forward find
+   BFIND = -2     # backward find
 
    # Possible values for the found_quote flags word used by the completion
    #   functions.  It says what kind of (shell-like) quoting we found anywhere
    #   in the line.
-   RL_QF_SINGLE_QUOTE	= 0x01
-   RL_QF_DOUBLE_QUOTE	= 0x02
-   RL_QF_BACKSLASH		= 0x04
-   RL_QF_OTHER_QUOTE	= 0x08
+   RL_QF_SINGLE_QUOTE   = 0x01
+   RL_QF_DOUBLE_QUOTE   = 0x02
+   RL_QF_BACKSLASH      = 0x04
+   RL_QF_OTHER_QUOTE = 0x08
 
    KEYMAP_SIZE = 257
    ANYOTHERKEY = KEYMAP_SIZE-1
@@ -149,17 +149,17 @@ module RbReadline
    ISKMAP = 1
    ISMACR = 2
 
-   HISTORY_WORD_DELIMITERS		= " \t\n;&()|<>"
-   HISTORY_QUOTE_CHARACTERS	= "\"'`"
+   HISTORY_WORD_DELIMITERS    = " \t\n;&()|<>"
+   HISTORY_QUOTE_CHARACTERS   = "\"'`"
 
-   RL_SEARCH_ISEARCH	= 0x01		# incremental search
-   RL_SEARCH_NSEARCH	= 0x02		# non-incremental search
-   RL_SEARCH_CSEARCH	= 0x04		# intra-line char search
+   RL_SEARCH_ISEARCH = 0x01      # incremental search
+   RL_SEARCH_NSEARCH = 0x02      # non-incremental search
+   RL_SEARCH_CSEARCH = 0x04      # intra-line char search
 
    # search flags
-   SF_REVERSE		= 0x01
-   SF_FOUND		= 0x02
-   SF_FAILED		= 0x04
+   SF_REVERSE     = 0x01
+   SF_FOUND    = 0x02
+   SF_FAILED      = 0x04
 
    @slashify_in_quotes = "\\`\"$"
 
@@ -337,7 +337,7 @@ module RbReadline
    # If HISTORY_STIFLED is non-zero, then this is the maximum number of
    #   entries to remember.
    @history_max_entries = 0
-   @max_input_history = 0	# backwards compatibility
+   @max_input_history = 0  # backwards compatibility
 
    # The current location of the interactive history pointer.  Just makes
    #   life easier for outside callers.
@@ -346,7 +346,7 @@ module RbReadline
    # The number of strings currently stored in the history list.
    @history_length = 0
 
-   @_rl_vi_last_command = 'i'	# default `.' puts you in insert mode
+   @_rl_vi_last_command = 'i' # default `.' puts you in insert mode
 
    # Non-zero means enter insertion mode.
    @_rl_vi_doing_insert = 0
@@ -1131,7 +1131,7 @@ module RbReadline
          end
 
          # The directory completion hook should perform any necessary
-         #	 dequoting.
+         #   dequoting.
          if (@rl_directory_completion_hook && send(rl_directory_completion_hook,@dirname))
             @users_dirname = @dirname.dup
          elsif (@rl_completion_found_quote && @rl_filename_dequoting_function)
@@ -1519,7 +1519,7 @@ module RbReadline
       if !@rl_byte_oriented
          dpos = _rl_col_width(data, start, start+new)
 
-         if (dpos > @prompt_last_invisible)		# XXX - don't use woff here
+         if (dpos > @prompt_last_invisible)     # XXX - don't use woff here
             dpos -= woff
             # Since this will be assigned to _rl_last_c_pos at the end (more
             #   precisely, _rl_last_c_pos == dpos when this function returns),
@@ -1702,7 +1702,7 @@ module RbReadline
                else
                   ninvis += ind - pind
                end
-               pi-=1			# compensate for later increment
+               pi-=1       # compensate for later increment
             else
                ret << pmt[pi]
                if (!ignoring)
@@ -1937,8 +1937,8 @@ module RbReadline
       rl_bind_keyseq_if_unbound(@_rl_term_kr, :rl_forward_char)
       rl_bind_keyseq_if_unbound(@_rl_term_kl, :rl_backward_char)
 
-      rl_bind_keyseq_if_unbound(@_rl_term_kh, :rl_beg_of_line)	# Home
-      rl_bind_keyseq_if_unbound(@_rl_term_at7, :rl_end_of_line)	# End
+      rl_bind_keyseq_if_unbound(@_rl_term_kh, :rl_beg_of_line) # Home
+      rl_bind_keyseq_if_unbound(@_rl_term_at7, :rl_end_of_line)   # End
 
       rl_bind_keyseq_if_unbound(@_rl_term_kD, :rl_delete)
       rl_bind_keyseq_if_unbound(@_rl_term_kI, :rl_overwrite_mode)
@@ -2556,13 +2556,13 @@ module RbReadline
    #   increased.  If the lines have already been allocated, this ensures that
    #   they can hold at least MINSIZE characters.
    def init_line_structures(minsize)
-      if @invisible_line.nil?	# initialize it
+      if @invisible_line.nil? # initialize it
          if (@line_size < minsize)
             @line_size = minsize
          end
          @visible_line = 0.chr * @line_size
          @invisible_line = 0.chr * @line_size # 1.chr
-      elsif (@line_size < minsize)	# ensure it can hold MINSIZE chars
+      elsif (@line_size < minsize)  # ensure it can hold MINSIZE chars
          @line_size *= 2
          if (@line_size < minsize)
             @line_size = minsize
@@ -2640,14 +2640,14 @@ module RbReadline
    # PWP: update_line() is based on finding the middle difference of each
    #   line on the screen; vis:
    #
-   #			     /old first difference
-   #	/beginning of line   |	      /old last same       /old EOL
-   #	v		     v	      v		    v
-   # old:	eddie> Oh, my little gruntle-buggy is to me, as lurgid as
-   # new:	eddie> Oh, my little buggy says to me, as lurgid as
-   #	^		     ^	^			   ^
-   #	\beginning of line   |	\new last same	   \new end of line
-   #			     \new first difference
+   #             /old first difference
+   #  /beginning of line   |        /old last same       /old EOL
+   #  v          v         v         v
+   # old:   eddie> Oh, my little gruntle-buggy is to me, as lurgid as
+   # new:   eddie> Oh, my little buggy says to me, as lurgid as
+   #  ^          ^   ^           ^
+   #  \beginning of line   |  \new last same    \new end of line
+   #             \new first difference
    #
    #   All are character pointers for the sake of speed.  Special cases for
    #   no differences, as well as for end of line additions must be handled.
@@ -2823,7 +2823,7 @@ module RbReadline
       end
 
 
-      wsatend = true			# flag for trailing whitespace
+      wsatend = true       # flag for trailing whitespace
 
       if (!@rl_byte_oriented)
 
@@ -2842,7 +2842,7 @@ module RbReadline
             nls = _rl_find_prev_mbchar(new, nls, MB_FIND_ANY)
          end
       else
-         ols = oe - 1			# find last same
+         ols = oe - 1         # find last same
          nls = ne - 1
          while ((ols > ofd) && (nls > nfd) && old[ostart+ols] == new[nls])
             if (old[ostart+ols] != ?\x20 )
@@ -2857,7 +2857,7 @@ module RbReadline
          ols = oe
          nls = ne
       elsif (!_rl_compare_chars(old, ostart+ols, new, nls))
-         if (old[ostart+ols] != ?\0)			# don't step past the NUL
+         if (old[ostart+ols] != ?\0)         # don't step past the NUL
             if !@rl_byte_oriented
                ols = _rl_find_next_mbchar(old, ostart+ols, 1, MB_FIND_ANY) - ostart
             else
@@ -2952,7 +2952,7 @@ module RbReadline
       else
          col_temp = temp
       end
-      if (col_lendiff > 0)	# XXX - was lendiff
+      if (col_lendiff > 0) # XXX - was lendiff
 
          # Non-zero if we're increasing the number of lines.
          gl = current_line >= @_rl_vis_botlin && inv_botlin > @_rl_vis_botlin
@@ -3005,7 +3005,7 @@ module RbReadline
             #   characters) we need to adjust _rl_last_c_pos, since it represents
             #   a physical character position.
          end
-      else				# Delete characters from line.
+      else           # Delete characters from line.
          # If possible and inexpensive to use terminal deletion, then do so.
          if (@_rl_term_dc && (2 * col_temp) >= -col_lendiff)
 
@@ -3032,7 +3032,7 @@ module RbReadline
          else
             if (temp > 0)
                _rl_output_some_chars(new,nfd, temp)
-               @_rl_last_c_pos += col_temp		# XXX
+               @_rl_last_c_pos += col_temp      # XXX
             end
 
             lendiff = (oe) - (ne)
@@ -3267,7 +3267,7 @@ module RbReadline
                wc_width = wc ? wc.length : 1
             end
          end
-         if (out + 8 >= @line_size)		# XXX - 8 for \t
+         if (out + 8 >= @line_size)    # XXX - 8 for \t
             @line_size *= 2
             if @visible_line.length>=@line_size
                @visible_line = @visible_line[0,@line_size]
@@ -3332,7 +3332,7 @@ module RbReadline
             end
 
          elsif (c == "\n" && !@_rl_horizontal_scroll_mode && @_rl_term_up)
-            line[out] = 0.chr	# XXX - sentinel
+            line[out] = 0.chr # XXX - sentinel
             out += 1
             @inv_lbreaks[newlines+=1] = out
             lpos = 0
@@ -3573,7 +3573,7 @@ module RbReadline
                   tx = nleft
                end
                if (@_rl_last_c_pos > tx)
-                  _rl_backspace(@_rl_last_c_pos - tx)	# XXX
+                  _rl_backspace(@_rl_last_c_pos - tx) # XXX
                   @_rl_last_c_pos = tx
                end
             end
@@ -3588,7 +3588,7 @@ module RbReadline
             end
          end
 
-      else				# Do horizontal scrolling.
+      else           # Do horizontal scrolling.
 
          # Always at top line.
          @_rl_last_v_pos = 0
@@ -3620,12 +3620,12 @@ module RbReadline
             if (@wrap_offset!=0 && lmargin > 0 && lmargin < nleft)
                lmargin = nleft
             end
-         elsif (ndisp < @_rl_screenwidth - 2)		# XXX - was -1
+         elsif (ndisp < @_rl_screenwidth - 2)      # XXX - was -1
             lmargin = 0
          elsif (phys_c_pos < 1)
             # If we are moving back towards the beginning of the line and
             #   the last margin is no longer correct, compute a new one.
-            lmargin = ((@cpos_buffer_position - 1) / t) * t	# XXX
+            lmargin = ((@cpos_buffer_position - 1) / t) * t # XXX
             if (@wrap_offset!=0 && lmargin > 0 && lmargin < nleft)
                lmargin = nleft
             end
@@ -3842,7 +3842,7 @@ module RbReadline
       @vis_lbreaks[newlines] = l
       @visible_wrap_offset = 0
 
-      @rl_display_prompt = @rl_prompt	# XXX - make sure it's set
+      @rl_display_prompt = @rl_prompt  # XXX - make sure it's set
 
       return 0
    end
@@ -3942,9 +3942,9 @@ module RbReadline
             cxt.lastc = -3
          elsif (c == "\C-G")
             cxt.lastc = -4
-         elsif (c == "\C-W")	# XXX
+         elsif (c == "\C-W")  # XXX
             cxt.lastc = -5
-         elsif (c == "\C-Y")	# XXX
+         elsif (c == "\C-Y")  # XXX
             cxt.lastc = -6
          end
       end
@@ -4015,7 +4015,7 @@ module RbReadline
             cxt.sflags &= ~SF_REVERSE
          end
          # delete character from search string.
-      when -3	# C-H, DEL
+      when -3  # C-H, DEL
          # This is tricky.  To do this right, we need to keep a
          # stack of search positions for the current search, with
          # sentinels marking the beginning and end.  But this will
@@ -4025,14 +4025,14 @@ module RbReadline
          else
             cxt.search_string[cxt.search_string_index-=1] = 0.chr
          end
-      when -4	# C-G, abort
+      when -4  # C-G, abort
          rl_replace_line(cxt.lines[cxt.save_line], false)
          @rl_point = cxt.save_point
          @rl_mark = cxt.save_mark
          rl_restore_prompt()
          rl_clear_message()
          return -1
-      when -5	# C-W
+      when -5  # C-W
          # skip over portion of line we already matched and yank word
          wstart = @rl_point + cxt.search_string_index
          if (wstart >= @rl_end)
@@ -4066,7 +4066,7 @@ module RbReadline
             end
          end
 
-      when -6	# C-Y
+      when -6  # C-Y
          # skip over portion of line we already matched and yank rest
          wstart = @rl_point + cxt.search_string_index
          if (wstart >= @rl_end)
@@ -4415,10 +4415,10 @@ module RbReadline
             while (@rl_event_hook && (c=rl_get_char()).nil?)
 
                send(@rl_event_hook)
-               if (@rl_done)		# XXX - experimental
+               if (@rl_done)     # XXX - experimental
                   return ("\n")
                end
-               if (rl_gather_tyi() < 0)	# XXX - EIO
+               if (rl_gather_tyi() < 0)   # XXX - EIO
                   @rl_done = true
                   return ("\n")
                end
@@ -4931,7 +4931,7 @@ module RbReadline
       end
       if (which == -2 && last >= 0)
          entry = @the_history[last]
-         entry.data = new	# XXX - we don't check entry->old
+         entry.data = new  # XXX - we don't check entry->old
       end
    end
 
@@ -5199,7 +5199,7 @@ module RbReadline
       _rl_move_vert(curr_line)
       _rl_move_cursor_relative(0, @rl_line_buffer)   # XXX is this right
 
-      _rl_clear_to_eol(0)		# arg of 0 means to not use spaces
+      _rl_clear_to_eol(0)     # arg of 0 means to not use spaces
 
       rl_forced_update_display()
       @rl_display_fixed = true
@@ -5216,7 +5216,7 @@ module RbReadline
          return 0
       end
 
-      _rl_clear_screen()		# calls termcap function to clear screen
+      _rl_clear_screen()      # calls termcap function to clear screen
       rl_forced_update_display()
       @rl_display_fixed = true
       0
@@ -5230,7 +5230,7 @@ module RbReadline
          rl_replace_line(@_rl_saved_line_for_history.line, false)
          @rl_undo_list = @_rl_saved_line_for_history.data
          @_rl_saved_line_for_history = nil
-         @rl_point = @rl_end	# rl_replace_line sets rl_end
+         @rl_point = @rl_end  # rl_replace_line sets rl_end
       else
          rl_ding()
       end
@@ -5587,8 +5587,8 @@ module RbReadline
       # If we've wrapped lines, remove the final xterm line-wrap flag.
       if (full_lines && @_rl_term_autowrap && (vis_llen(@_rl_vis_botlin) == @_rl_screenwidth))
          last_line = @visible_line[@vis_lbreaks[@_rl_vis_botlin]..-1]
-         @cpos_buffer_position = -1	# don't know where we are in buffer
-         _rl_move_cursor_relative(@_rl_screenwidth - 1, last_line)	# XXX
+         @cpos_buffer_position = -1 # don't know where we are in buffer
+         _rl_move_cursor_relative(@_rl_screenwidth - 1, last_line)   # XXX
          _rl_clear_to_eol(0)
          @rl_outstream.write(last_line[@_rl_screenwidth - 1,1])
       end
@@ -5612,7 +5612,7 @@ module RbReadline
 
       if (@rl_editing_mode == @vi_mode)
          _rl_vi_done_inserting()
-         if (_rl_vi_textmod_command(@_rl_vi_last_command).nil?)	# XXX
+         if (_rl_vi_textmod_command(@_rl_vi_last_command).nil?)   # XXX
             _rl_vi_reset_last()
          end
       end
@@ -5664,7 +5664,7 @@ module RbReadline
       l = 0
       count.times do
          rl_backward_char(1, key)
-         l += rl_character_len(@rl_line_buffer[@rl_point,1], @rl_point)	# not exactly right
+         l += rl_character_len(@rl_line_buffer[@rl_point,1], @rl_point) # not exactly right
       end
 
       rl_begin_undo_group()
@@ -6333,7 +6333,7 @@ module RbReadline
    #   for the previous slash and return the portion following that.  If
    #   there's no previous slash, we just return what we were passed.
    def printable_part(pathname)
-      if (!@rl_filename_completion_desired)	# don't need to do anything
+      if (!@rl_filename_completion_desired)  # don't need to do anything
          return (pathname)
       end
 
@@ -6703,7 +6703,7 @@ module RbReadline
                   display_matches(matches)
                end
             elsif (@rl_editing_mode != @vi_mode)
-               rl_ding()	# There are other matches remaining.
+               rl_ding()   # There are other matches remaining.
             end
          else
             append_to_match(matches[0], delimiter, quote_char, nontrivial_lcd)
@@ -7140,7 +7140,7 @@ module RbReadline
       cxt.sline_len = cxt.sline.delete(0.chr).length
       cxt.sline_index = @rl_point
 
-      @_rl_iscxt = cxt		# save globally
+      @_rl_iscxt = cxt     # save globally
       cxt
    end
 
@@ -7498,7 +7498,7 @@ module RbReadline
    # Do some undoing of things that were done.
    def rl_undo_command(count, key)
       if (count < 0)
-         return 0	# Nothing to do.
+         return 0 # Nothing to do.
       end
       while (count>0)
          if (rl_do_undo())
@@ -7557,7 +7557,7 @@ module RbReadline
             rl_do_undo()
          end
          if (@rl_editing_mode == @vi_mode)
-            @rl_point = @rl_mark = 0		# rl_end should be set correctly
+            @rl_point = @rl_mark = 0      # rl_end should be set correctly
          end
       end
       0
@@ -7599,7 +7599,7 @@ module RbReadline
             return 1
          elsif (rl_isstate(RL_STATE_CALLBACK))
             @_rl_argcxt |= NUM_READONE
-            return 0	# XXX
+            return 0 # XXX
          else
             rl_setstate(RL_STATE_MOREINPUT)
             key = rl_read_key()
@@ -7972,7 +7972,7 @@ module RbReadline
    def _rl_nsearch_init(dir, pchar)
       cxt = _rl_scxt_alloc(RL_SEARCH_NSEARCH, 0)
       if (dir < 0)
-         cxt.sflags |= SF_REVERSE		# not strictly needed
+         cxt.sflags |= SF_REVERSE      # not strictly needed
       end
       cxt.direction = dir
       cxt.history_pos = cxt.save_line
@@ -8174,7 +8174,7 @@ module RbReadline
 
       # Watch out for special case.  If LEN is less than LIMIT, then
       #   just do the inner printing loop.
-      #	   0 < len <= limit  implies  count = 1.
+      #     0 < len <= limit  implies  count = 1.
 
       # Sort the items if they are not already sorted.
       if (!@rl_ignore_completion_duplicates)
@@ -8369,7 +8369,7 @@ module RbReadline
 
    # Delete COUNT characters from the display line.
    def delete_chars(count)
-      return if (count > @_rl_screenwidth)	# XXX
+      return if (count > @_rl_screenwidth)   # XXX
 
       if @hConsoleHandle.nil?
          #if (@_rl_term_DC)
