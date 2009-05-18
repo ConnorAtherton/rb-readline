@@ -5762,7 +5762,7 @@ module RbReadline
          @rl_point = xpoint
       else
          if !@rl_byte_oriented
-            xpoint =_rl_find_next_mbchar(@rl_line_buffer, rl_point, 1, MB_FIND_NONZERO)
+            xpoint =_rl_find_next_mbchar(@rl_line_buffer, @rl_point, 1, MB_FIND_NONZERO)
          else
             xpoint = @rl_point + 1
          end
@@ -5891,7 +5891,7 @@ module RbReadline
 
             while (@rl_point>0 && !whitespace(c) && c != '/')
                @rl_point-=1
-               c = @rl_line_buffer[rl_point - 1,1]
+               c = @rl_line_buffer[@rl_point - 1,1]
             end
             count -= 1
          end
@@ -7525,7 +7525,7 @@ module RbReadline
 
          @rl_point = orig_point
          if (@rl_editing_mode == @emacs_mode)
-            rl_mark = rl_point
+            rl_mark = @rl_point
          end
       end
       0
