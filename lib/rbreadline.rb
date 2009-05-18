@@ -5762,7 +5762,7 @@ module RbReadline
          @rl_point = xpoint
       else
          if !@rl_byte_oriented
-            xpoint =_rl_find_next_mbchar(rl_line_buffer, rl_point, 1, MB_FIND_NONZERO)
+            xpoint =_rl_find_next_mbchar(@rl_line_buffer, rl_point, 1, MB_FIND_NONZERO)
          else
             xpoint = @rl_point + 1
          end
@@ -6091,7 +6091,7 @@ module RbReadline
                end
             end
             if !@rl_byte_oriented
-               scan = _rl_find_next_mbchar(rl_line_buffer, scan, 1, MB_FIND_ANY)
+               scan = _rl_find_next_mbchar(@rl_line_buffer, scan, 1, MB_FIND_ANY)
             else
                scan += 1
             end
