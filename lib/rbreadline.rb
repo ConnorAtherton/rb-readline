@@ -1859,10 +1859,10 @@ module RbReadline
       end
 
       # If all else fails, default to 80x24 terminal.
-      if (@_rl_screenwidth <= 1)
+      if @_rl_screenwidth.nil? || @_rl_screenwidth <= 1
          @_rl_screenwidth = 80
       end
-      if (@_rl_screenheight <= 0)
+      if @_rl_screenheight.nil? || @_rl_screenheight <= 0
          @_rl_screenheight = 24
       end
       # If we're being compiled as part of bash, set the environment
