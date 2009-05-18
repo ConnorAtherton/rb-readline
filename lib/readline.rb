@@ -352,7 +352,7 @@ module Readline
       #--
       # TODO: mark private?
       #
-      def rb_remove_history(index)
+      def self.rb_remove_history(index)
          entry = RbReadline.remove_history(index)
          if (entry)
             val = entry.line.dup
