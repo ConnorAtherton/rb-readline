@@ -1,10 +1,7 @@
-require 'rubygems'
-gem 'test-unit'
-
 require 'test/unit'
 require 'readline'
 
-class TC_Pr_Readline < Test::Unit::TestCase
+class TC_Readline < Test::Unit::TestCase
    def setup
       @proc = proc{ |s| ['alpha', 'beta'].grep( /^#{Regexp.escape(s)}/) }
    end
@@ -53,7 +50,7 @@ class TC_Pr_Readline < Test::Unit::TestCase
       assert_respond_to(Readline, :completion_case_fold)
    end
 
-   def test_completion_case_fold
+   def test_completion_case_fold_default
       assert_equal(false, Readline.completion_case_fold) # default
    end
 
@@ -61,7 +58,7 @@ class TC_Pr_Readline < Test::Unit::TestCase
       assert_respond_to(Readline, :completion_case_fold=)
    end
 
-   def test_completion_case_fold
+   def test_completion_case_fold_changed
       assert_nothing_raised{ Readline.completion_case_fold = false }
    end
 
