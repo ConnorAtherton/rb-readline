@@ -6877,7 +6877,7 @@ module RbReadline
    end
 
    def rl_prep_terminal(meta_flag)
-      if ENV["TERM"].nil?
+      if ENV["TERM"].nil? || (ENV['TERM'] == 'cygwin' && RUBY_PLATFORM =~ /mswin|mingw/)
          @readline_echoing_p = true
          return
       end
