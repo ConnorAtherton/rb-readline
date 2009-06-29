@@ -7798,6 +7798,11 @@ module RbReadline
       0
    end
 
+   def isascii(c)
+    int_val = c[0].to_i # 1.8 + 1.9 compat.
+    return (int_val < 128 && int_val > 0)
+   end
+
    # Search non-interactively through the history list.  DIR < 0 means to
    #   search backwards through the history of previous commands; otherwise
    #   the search is for commands subsequent to the current position in the
