@@ -4333,15 +4333,19 @@ module RbReadline
       @pending_count = 0
       @pending_key = nil
 
-      case `chcp`.scan(/\d+$/).first.to_i
-      when 936,949,950,51932,51936,50225
-         @encoding = "E"
-      when 932,50220,50221,20222
-         @encoding = "S"
-      when 65001
-         @encoding = "U"
-      else
-         @encoding = "N"
+      begin
+        case `chcp`.scan(/\d+$/).first.to_i
+        when 936,949,950,51932,51936,50225
+          @encoding = "E"
+        when 932,50220,50221,20222
+          @encoding = "S"
+        when 65001
+          @encoding = "U"
+        else
+          @encoding = "N"
+        end
+      rescue
+        @encoding = "N"
       end
 
       def rl_getc(stream)
