@@ -1768,7 +1768,7 @@ module RbReadline
          return (@prompt_visible_length)
       else
          # The prompt spans multiple lines.
-         pi += 1
+         pi += 1 if prompt.length!=pi+1
          t = pi
          @local_prompt,@prompt_visible_length,@prompt_last_invisible,_,@prompt_physical_chars = expand_prompt(prompt[pi..-1])
          c = prompt[t]
@@ -1951,7 +1951,7 @@ module RbReadline
       @_rl_term_clrpag = @_rl_term_cr = @_rl_term_clreol = nil
       tty = @rl_instream ? @rl_instream.fileno : 0
 
-      if term.nil?
+      if term.nil? || (term == 'cygwin' && RUBY_PLATFORM =~ /mswin|mingw/) 
          term = "dumb"
          @_rl_bind_stty_chars = false
       end
@@ -2683,15 +2683,15 @@ module RbReadline
             if new[0] != ?\0
                case @encoding
                when 'E'
-                  wc = new.scan(/./e)[0]
+                  wc = new.scan(/./me)[0]
                   ret = wc.length
                   tempwidth = wc.length
                when 'S'
-                  wc = new.scan(/./s)[0]
+                  wc = new.scan(/./ms)[0]
                   ret = wc.length
                   tempwidth = wc.length
                when 'U'
-                  wc = new.scan(/./u)[0]
+                  wc = new.scan(/./mu)[0]
                   ret = wc.length
                   tempwidth = wc.unpack('U').first >= 0x1000 ? 2 : 1
                when 'X'
@@ -2715,13 +2715,13 @@ module RbReadline
                if old[ostart] != ?\0
                   case @encoding
                   when 'E'
-                     wc = old[ostart..-1].scan(/./e)[0]
+                     wc = old[ostart..-1].scan(/./me)[0]
                      ret = wc.length
                   when 'S'
-                     wc = old[ostart..-1].scan(/./s)[0]
+                     wc = old[ostart..-1].scan(/./ms)[0]
                      ret = wc.length
                   when 'U'
-                     wc = old[ostart..-1].scan(/./u)[0]
+                     wc = old[ostart..-1].scan(/./mu)[0]
                      ret = wc.length
                   when 'X'
                      wc = old[ostart..-1].force_encoding(@encoding_name)[0]
@@ -3234,13 +3234,13 @@ module RbReadline
       if !@rl_byte_oriented && @rl_end>0
          case @encoding
          when 'E'
-            wc = @rl_line_buffer[0,@rl_end].scan(/./e)[0]
+            wc = @rl_line_buffer[0,@rl_end].scan(/./me)[0]
             wc_bytes = wc ? wc.length : 1
          when 'S'
-            wc = @rl_line_buffer[0,@rl_end].scan(/./s)[0]
+            wc = @rl_line_buffer[0,@rl_end].scan(/./ms)[0]
             wc_bytes = wc ? wc.length : 1
          when 'U'
-            wc = @rl_line_buffer[0,@rl_end].scan(/./u)[0]
+            wc = @rl_line_buffer[0,@rl_end].scan(/./mu)[0]
             wc_bytes = wc ? wc.length : 1
          when 'X'
             wc = @rl_line_buffer[0,@rl_end].force_encoding(@encoding_name)[0]
@@ -3402,13 +3402,13 @@ module RbReadline
             _in += wc_bytes
             case @encoding
             when 'E'
-               wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./e)[0]
+               wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./me)[0]
                wc_bytes = wc ? wc.length : 1
             when 'S'
-               wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./s)[0]
+               wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./ms)[0]
                wc_bytes = wc ? wc.length : 1
             when 'U'
-               wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./u)[0]
+               wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./mu)[0]
                wc_bytes = wc ? wc.length : 1
             when 'X'
                wc = @rl_line_buffer[_in,@rl_end - _in].force_encoding(@encoding_name)[0]
@@ -3772,11 +3772,11 @@ module RbReadline
       when 'N'
          return (_end - start)
       when 'U'
-         str[start ... _end].scan(/./u).each {|s| width += s.unpack('U').first >= 0x1000 ? 2 : 1 }
+         str[start ... _end].scan(/./mu).each {|s| width += s.unpack('U').first >= 0x1000 ? 2 : 1 }
       when 'S'
-         str[start ... _end].scan(/./s).each {|s| width += s.length }
+         str[start ... _end].scan(/./ms).each {|s| width += s.length }
       when 'E'
-         str[start ... _end].scan(/./e).each {|s| width += s.length }
+         str[start ... _end].scan(/./me).each {|s| width += s.length }
       when 'X'
          str[start ... _end].force_encoding(@encoding_name).codepoints.each {|s| width += s > 0x1000 ? 2 : 1 }
       end
@@ -6351,15 +6351,15 @@ module RbReadline
 
       case @encoding
       when 'E'
-         arr = to_print.scan(/./e)
+         arr = to_print.scan(/./me)
       when 'S'
-         arr = to_print.scan(/./s)
+         arr = to_print.scan(/./ms)
       when 'U'
-         arr = to_print.scan(/./u)
+         arr = to_print.scan(/./mu)
       when 'X'
          arr = to_print.dup.force_encoding(@encoding_name).chars
       else
-         arr = to_print.scan(/./)
+         arr = to_print.scan(/./m)
       end
 
       arr.each do |s|
@@ -6528,15 +6528,15 @@ module RbReadline
          else
             case @encoding
             when 'E'
-               wc = string[pos,left-pos].scan(/./e)[0]
+               wc = string[pos,left-pos].scan(/./me)[0]
                bytes = wc.length
                tempwidth = wc.length
             when 'S'
-               wc = string[pos,left-pos].scan(/./s)[0]
+               wc = string[pos,left-pos].scan(/./ms)[0]
                bytes = wc.length
                tempwidth = wc.length
             when 'U'
-               wc = string[pos,left-pos].scan(/./u)[0]
+               wc = string[pos,left-pos].scan(/./mu)[0]
                bytes = wc.length
                tempwidth = wc.unpack('U').first >= 0x1000 ? 2 : 1
             when 'X'
@@ -6544,7 +6544,7 @@ module RbReadline
                bytes = wc.bytesize
                tempwidth = wc.ord >= 0x1000 ? 2 : 1
             else
-               wc = string[pos,left-pos].scan(/./)[0]
+               wc = string[pos,left-pos].scan(/./m)[0]
                bytes = wc.length
                tempwidth = wc.length
             end
@@ -8402,11 +8402,11 @@ module RbReadline
 
       case @encoding
       when 'E'
-         pos = string.scan(/./e).inject(0){|r,x| r<point ? r += x.length : r }
+         pos = string.scan(/./me).inject(0){|r,x| r<point ? r += x.length : r }
       when 'S'
-         pos = string.scan(/./s).inject(0){|r,x| r<point ? r += x.length : r }
+         pos = string.scan(/./ms).inject(0){|r,x| r<point ? r += x.length : r }
       when 'U'
-         pos = string.scan(/./u).inject(0){|r,x| r<point ? r += x.length : r }
+         pos = string.scan(/./mu).inject(0){|r,x| r<point ? r += x.length : r }
       when 'X'
          pos = string.dup.force_encoding(@encoding_name).chars.inject(0){|r,x| r<point ? r += x.bytesize : r }
       else
@@ -8432,11 +8432,11 @@ module RbReadline
 
       case @encoding
       when 'E'
-         point += string[point..-1].scan(/./e)[0,count].to_s.length
+         point += string[point..-1].scan(/./me)[0,count].to_s.length
       when 'S'
-         point += string[point..-1].scan(/./s)[0,count].to_s.length
+         point += string[point..-1].scan(/./ms)[0,count].to_s.length
       when 'U'
-         point += string[point..-1].scan(/./u)[0,count].to_s.length
+         point += string[point..-1].scan(/./mu)[0,count].to_s.length
       when 'X'
          point += string[point..-1].force_encoding(@encoding_name)[0,count].bytesize
       else
@@ -8465,11 +8465,11 @@ module RbReadline
 
       case @encoding
       when 'E'
-         string[0,seed].scan(/./e)[0..-2].to_s.length
+         string[0,seed].scan(/./me)[0..-2].to_s.length
       when 'S'
-         string[0,seed].scan(/./s)[0..-2].to_s.length
+         string[0,seed].scan(/./ms)[0..-2].to_s.length
       when 'U'
-         string[0,seed].scan(/./u)[0..-2].to_s.length
+         string[0,seed].scan(/./mu)[0..-2].to_s.length
       when 'X'
          string[0,seed].force_encoding(@encoding_name)[0..-2].bytesize
       end
@@ -8481,11 +8481,11 @@ module RbReadline
       return false if buf1[pos1].nil? || buf2[pos2].nil?
       case @encoding
       when 'E'
-         buf1[pos1..-1].scan(/./e)[0] == buf2[pos2..-1].scan(/./e)[0]
+         buf1[pos1..-1].scan(/./me)[0] == buf2[pos2..-1].scan(/./me)[0]
       when 'S'
-         buf1[pos1..-1].scan(/./s)[0] == buf2[pos2..-1].scan(/./s)[0]
+         buf1[pos1..-1].scan(/./ms)[0] == buf2[pos2..-1].scan(/./ms)[0]
       when 'U'
-         buf1[pos1..-1].scan(/./u)[0] == buf2[pos2..-1].scan(/./u)[0]
+         buf1[pos1..-1].scan(/./mu)[0] == buf2[pos2..-1].scan(/./mu)[0]
       when 'X'
          buf1[pos1..-1].force_encoding(@encoding_name)[0] == buf2[pos2..-1].force_encoding(@encoding_name)[0]
       else
@@ -8502,11 +8502,11 @@ module RbReadline
       return 0 if src[0] == ?\0 || src.length==0
       case @encoding
       when 'E'
-         len = src.scan(/./e)[0].to_s.length
+         len = src.scan(/./me)[0].to_s.length
       when 'S'
-         len = src.scan(/./s)[0].to_s.length
+         len = src.scan(/./ms)[0].to_s.length
       when 'U'
-         len = src.scan(/./u)[0].to_s.length
+         len = src.scan(/./mu)[0].to_s.length
       when 'X'
          src = src.dup.force_encoding(@encoding_name)
          len = src.valid_encoding? ? src[0].bytesize : 0
@@ -8526,11 +8526,11 @@ module RbReadline
          rl_unsetstate(RL_STATE_MOREINPUT)
          case @encoding
          when 'E'
-            break unless mbchar.scan(/./e).empty?
+            break unless mbchar.scan(/./me).empty?
          when 'S'
-            break unless mbchar.scan(/./s).empty?
+            break unless mbchar.scan(/./ms).empty?
          when 'U'
-            break unless mbchar.scan(/./u).empty?
+            break unless mbchar.scan(/./mu).empty?
          when 'X'
             break if mbchar.dup.force_encoding(@encoding_name).valid_encoding?
          end
