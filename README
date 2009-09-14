@@ -17,7 +17,7 @@ of the standard library.
 = Motivation
 
 First, building the GNU readline library on MS Windows with Visual C++ is
-nigh impossible. However, certain libraries depend on readline. By providing
+almost impossible. However, certain libraries depend on readline. By providing
 a pure Ruby version we eliminate the entire compiler compatibility issue.
 
 Second, even on distributions of Windows built with MinGW (that include
