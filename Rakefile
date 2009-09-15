@@ -11,7 +11,7 @@ Rake::PackageTask.new('rb-readline', version) do |pkg|
   pkg.package_files.include("examples/*.rb")
   pkg.package_files.include("lib/*.rb")
   pkg.package_files.include("test/*.rb")
-  pkg.package_files.include("README", "LICENSE", "Rakefile", "setup.rb")
+  pkg.package_files.include("README", "LICENSE", "CHANGES", "Rakefile", "setup.rb")
 end
 
 Rake::TestTask.new do |t|
