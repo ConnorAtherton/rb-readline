@@ -3932,8 +3932,8 @@ module RbReadline
       f = nil
 
       # Translate the keys we do something with to opcodes.
-      if (c && _rl_keymap[c])
-         f = _rl_keymap[c]
+      if (c && @_rl_keymap[c])
+         f = @_rl_keymap[c]
          if (f == :rl_reverse_search_history)
             cxt.lastc = (cxt.sflags & SF_REVERSE)!=0 ? -1 : -2
          elsif (f == :rl_forward_search_history)
@@ -4171,7 +4171,7 @@ module RbReadline
       rl_restore_prompt()
 
       # Save the search string for possible later use.
-      @last_isearch_string = @cxt.search_string
+      @last_isearch_string = cxt.search_string
       @last_isearch_string_len = cxt.search_string_index
       cxt.search_string = nil
 
@@ -7217,7 +7217,7 @@ module RbReadline
 
       rl_message(message)
       message = nil
-      send(rl_redisplay_function)
+      send(@rl_redisplay_function)
    end
 
    # Transpose the characters at point.  If point is at the end of the line,

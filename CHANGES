@@ -3,5 +3,6 @@
 * Bugfixes:
   * Accept 'cygwin' as valid terminal [rogerdpack]
   * Accept 'dumb' as valid terminal. Closes GH-7
+  * Fix crash when performing reverse look search. Closes GH-6
 
 === 0.1.2 / 2009-05-18
