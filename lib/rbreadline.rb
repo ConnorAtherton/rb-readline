@@ -1951,7 +1951,7 @@ module RbReadline
       @_rl_term_clrpag = @_rl_term_cr = @_rl_term_clreol = nil
       tty = @rl_instream ? @rl_instream.fileno : 0
 
-      if term.nil? || (term == 'cygwin' && RUBY_PLATFORM =~ /mswin|mingw/) 
+      if no_terminal?
          term = "dumb"
          @_rl_bind_stty_chars = false
       end
@@ -6877,7 +6877,7 @@ module RbReadline
    end
 
    def rl_prep_terminal(meta_flag)
-      if ENV["TERM"].nil? || (ENV['TERM'] == 'cygwin' && RUBY_PLATFORM =~ /mswin|mingw/)
+      if no_terminal?
          @readline_echoing_p = true
          return
       end
@@ -8654,5 +8654,11 @@ module RbReadline
    :rl_completer_word_break_characters=,:rl_completion_append_character=,
    :rl_filename_quote_characters=,:rl_instream=,:rl_library_version=,:rl_outstream=,
    :rl_readline_name=,:history_length,:history_base
+
+  def no_terminal?
+    term = ENV["TERM"]
+    term.nil? || (term == 'dumb') || (term == 'cygwin' && RUBY_PLATFORM =~ /mswin|mingw/)
+  end
+  private :no_terminal?
 
 end

@@ -2,5 +2,6 @@
 
 * Bugfixes:
   * Accept 'cygwin' as valid terminal [rogerdpack]
+  * Accept 'dumb' as valid terminal. Closes GH-7
 
 === 0.1.2 / 2009-05-18
