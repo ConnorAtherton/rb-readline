@@ -1951,7 +1951,7 @@ module RbReadline
       @_rl_term_clrpag = @_rl_term_cr = @_rl_term_clreol = nil
       tty = @rl_instream ? @rl_instream.fileno : 0
 
-      if no_terminal? || RUBY_PLATFORM =~ /mswin|mingw/
+      if no_terminal?
          term = "dumb"
          @_rl_bind_stty_chars = false
       end
@@ -8657,7 +8657,7 @@ module RbReadline
 
   def no_terminal?
     term = ENV["TERM"]
-    term.nil? || (term == 'dumb') || (term == 'cygwin' && RUBY_PLATFORM =~ /mswin|mingw/)
+    term.nil? || (term == 'dumb') || (RUBY_PLATFORM =~ /mswin|mingw/)
   end
   private :no_terminal?
 
