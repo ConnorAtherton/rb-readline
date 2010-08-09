@@ -1951,7 +1951,7 @@ module RbReadline
       @_rl_term_clrpag = @_rl_term_cr = @_rl_term_clreol = nil
       tty = @rl_instream ? @rl_instream.fileno : 0
 
-      if no_terminal?
+      if no_terminal? || RUBY_PLATFORM =~ /mswin|mingw/
          term = "dumb"
          @_rl_bind_stty_chars = false
       end
