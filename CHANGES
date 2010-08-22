@@ -1,3 +1,9 @@
+=== 0.2.1 / 2010-08-22
+
+* Bugfixes:
+  * Use stdcall as default calling convention under Ruby 1.9 [GH-15]
+  * Fix TERM under Windows
+
 === 0.2.0
 
 * Bugfixes:
