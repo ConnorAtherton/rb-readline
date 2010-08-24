@@ -4399,7 +4399,7 @@ module RbReadline
       end
    end
 
-   if defined? ''.getbyte
+   if RUBY_VERSION >= "1.9.0"
       @encoding = "X"      # ruby 1.9.x or greater
       @encoding_name = Encoding.default_external.to_s
    end
