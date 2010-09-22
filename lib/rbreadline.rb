@@ -204,6 +204,8 @@ module RbReadline
    :t_quit,:t_susp,:t_dsusp,:t_start,:t_stop,:t_lnext,:t_flush,:t_status).new
    @_rl_last_tty_chars = nil
 
+   @_keyboard_input_timeout = 0.1
+
    # Variables exported by this file.
    # The character that represents the start of a history expansion
    #   request.  This is usually `!'.
@@ -3923,6 +3925,10 @@ module RbReadline
 
    def endsrch_char(c)
       ((ctrl_char(c) || meta_char(c) || (c) == RUBOUT) && ((c) != "\C-G"))
+   end
+
+   def _rl_input_available
+      IO.select([ $stdin ], nil, [ $stdin ], @_keyboard_input_timeout)
    end
 
    # Process just-read character C according to isearch context CXT.  Return
