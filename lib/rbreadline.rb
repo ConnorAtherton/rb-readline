@@ -2484,7 +2484,7 @@ module RbReadline
       @_rl_out_stream = @rl_outstream
 
       # Allocate data structures.
-      @rl_line_buffer ||= 0.chr * DEFAULT_BUFFER_SIZE
+      @rl_line_buffer = ""
 
       # Initialize the terminal interface.
       @rl_terminal_name ||= ENV["TERM"]
@@ -2524,7 +2524,7 @@ module RbReadline
 
    def _rl_init_line_state()
       @rl_point = @rl_end = @rl_mark = 0
-      @rl_line_buffer = 0.chr * @rl_line_buffer.length
+      @rl_line_buffer = ""
    end
 
    # Set the history pointer back to the last entry in the history.
@@ -4023,7 +4023,8 @@ module RbReadline
          if (cxt.search_string_index == 0)
             rl_ding()
          else
-            cxt.search_string[cxt.search_string_index-=1] = 0.chr
+            cxt.search_string_index -= 1
+            cxt.search_string.chop!
          end
       when -4  # C-G, abort
          rl_replace_line(cxt.lines[cxt.save_line], false)
@@ -7055,7 +7056,7 @@ module RbReadline
    def _rl_scxt_alloc(type, flags)
       cxt = Struct.new(:type,:sflags,:search_string,:search_string_index,:search_string_size,:lines,:allocated_line,
       :hlen,:hindex,:save_point,:save_mark,:save_line,:last_found_line,:prev_line_found,:save_undo_list,:history_pos,
-      :direction,:lastc,:sline,:sline_len,:sline_index,:search_terminators).new
+      :direction,:lastc,:sline,:sline_len,:sline_index,:search_terminators,:mb).new
 
       cxt.type = type
       cxt.sflags = flags
@@ -7112,7 +7113,7 @@ module RbReadline
       # Allocate space for this many lines, +1 for the current input line,
       #   and remember those lines.
       cxt.hlen = i
-      cxt.lines = Array.new(cxt.hlen+1)
+      cxt.lines = []
       for i in 0 ... cxt.hlen
          cxt.lines[i] = hlist[i].line
       end
@@ -7122,7 +7123,7 @@ module RbReadline
       else
          # Keep track of this so we can free it.
          cxt.allocated_line = @rl_line_buffer.dup
-         cxt.lines[i] = cxt.allocated_line
+         cxt.lines << cxt.allocated_line
       end
 
       cxt.hlen+=1
@@ -7135,7 +7136,7 @@ module RbReadline
       # Initialize search parameters.
       cxt.search_string_size = 128
       cxt.search_string_index = 0
-      cxt.search_string = 0.chr * cxt.search_string_size
+      cxt.search_string = ""
 
       # Normalize DIRECTION into 1 or -1.
       cxt.direction = (direction >= 0) ? 1 : -1
