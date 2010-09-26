@@ -1,3 +1,12 @@
+=== (In Git)
+
+* Enhancements:
+  * Implemented missing _rl_input_available. [Spakman]
+  * Made code look more Ruby than C. [Spakman]
+
+* Bugfixes:
+  * Fix bugs in the reverse search. Closes GH-14. [Spakman]
+
 === 0.2.1 / 2010-08-22
 
 * Bugfixes:
