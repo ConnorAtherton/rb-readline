@@ -2396,9 +2396,10 @@ module RbReadline
          return 0
       end
 
-      key,funname = string.split(/\s*:\s*/)
-      key = instance_eval(key)
-      rl_bind_key(key, rl_named_function(funname))
+      if string =~ /"(.*)"\s*:\s*(.*)$/
+        key, funname = $1, $2
+        rl_bind_key(key, rl_named_function(funname))
+      end
 
       0
    end
