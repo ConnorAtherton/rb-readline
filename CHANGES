@@ -1,4 +1,4 @@
-=== (In Git)
+=== 0.2.2 / 2010-10-19
 
 * Enhancements:
   * Implemented missing _rl_input_available. [Spakman]
@@ -6,6 +6,7 @@
 
 * Bugfixes:
   * Fix bugs in the reverse search. Closes GH-14. [Spakman]
+  * Do not eval inputrc defitions. Closes GH-17
 
 === 0.2.1 / 2010-08-22
 
