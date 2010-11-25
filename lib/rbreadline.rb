@@ -8443,7 +8443,7 @@ module RbReadline
          count -= 1
       end
       
-      str = (flags == MB_FIND_NONZERO) ? string.strip : string
+      str = (flags == MB_FIND_NONZERO) ? string.sub(/\x00+$/,'') : string
       
       case @encoding
       when 'E'
