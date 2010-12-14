@@ -4356,14 +4356,14 @@ module RbReadline
       def rl_getc(stream)
          while (@kbhit.Call == 0)
             # If there is no input, yield the processor for other threads
-            sleep(0.001)
+            sleep(@_keyboard_input_timeout)
          end
          c = @getch.Call
          alt = (@GetKeyState.call(VK_LMENU) & 0x80) != 0
          if c==0 || c==0xE0
             while (@kbhit.Call == 0)
                # If there is no input, yield the processor for other threads
-               sleep(0.001)
+               sleep(@_keyboard_input_timeout)
             end
             r = c.chr + @getch.Call.chr
          else
