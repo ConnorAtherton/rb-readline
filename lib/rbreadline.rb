@@ -4536,7 +4536,7 @@ module RbReadline
 
    def _rl_clear_screen()
       if (@_rl_term_clrpag)
-         @rl_outstream.write(@_rl_tirberm_clrpag)
+         @rl_outstream.write(@_rl_term_clrpag)
       else
          rl_crlf()
       end
