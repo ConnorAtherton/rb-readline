@@ -24,7 +24,7 @@ module RbReadline
    RETURN = "\C-M"
    ABORT_CHAR = "\C-G"
    TAB = "\t"
-   RUBOUT = "x7f"
+   RUBOUT = "\x7f"
    NEWLINE = "\n"
 
    DEFAULT_BUFFER_SIZE = 256
