@@ -3994,10 +3994,10 @@ module RbReadline
          # search again
       when -1
          if (cxt.search_string_index == 0)
-            if (last_isearch_string)
-               cxt.search_string_size = 64 + last_isearch_string_len
-               cxt.search_string = last_isearch_string.dup
-               cxt.search_string_index = last_isearch_string_len
+            if (@last_isearch_string)
+               cxt.search_string_size = 64 + @last_isearch_string_len
+               cxt.search_string = @last_isearch_string.dup
+               cxt.search_string_index = @last_isearch_string_len
                rl_display_search(cxt.search_string, (cxt.sflags & SF_REVERSE)!=0, -1)
             else
                return (1)
