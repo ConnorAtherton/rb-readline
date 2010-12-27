@@ -1,3 +1,14 @@
+=== (In Git)
+
+* Enhancements:
+  * Yield procesor to other threads on Windows. [jduck]
+
+* Bugfixes:
+  * Fix 1.8 and 1.9 code compatibility issues. [jduck]
+  * Changes on Encoding detection. [jduck]
+  * Handle ^L properly. [jduck]
+  * Instance variable/typos cleanup. [jduck]
+
 === 0.2.2 / 2010-10-19
 
 * Enhancements:
