@@ -1,4 +1,4 @@
-=== (In Git)
+=== 0.3.0 / 2010-12-27
 
 * Enhancements:
   * Yield procesor to other threads on Windows. [jduck]
