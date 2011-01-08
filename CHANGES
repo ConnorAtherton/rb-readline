@@ -2,6 +2,7 @@
 
 * Enhancements:
   * Provides access to readline line_buffer (to support Bond).
+  * Initial support for gemification of the library.
 
 === 0.3.0 / 2010-12-27
 
