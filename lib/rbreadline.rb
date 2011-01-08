@@ -3691,6 +3691,10 @@ module RbReadline
       end
    end
 
+   def rl_line_buffer
+      @rl_line_buffer.tr(0.chr, '')
+   end
+
    # Tell the update routines that we have moved onto a new (empty) line.
    def rl_on_new_line()
       if (@visible_line)
