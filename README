@@ -5,14 +5,15 @@ readline C library, as well as the Readline extension that ships as part
 of the standard library.
 
 = Synopsis
- require 'readline'
 
- loop do
+  require 'readline'
+
+  loop do
     line = Readline::readline('> ')
     Readline::HISTORY.push(line)
     puts "You typed: #{line}"
     break if line == 'quit'
- end
+  end
 
 = Motivation
 
@@ -56,3 +57,4 @@ compatibility mode.
 
 * Park Heesob (C translation, code donated as part of bounty)
 * Daniel Berger (Documentation and testing)
+* Luis Lavena (Maintainer)
