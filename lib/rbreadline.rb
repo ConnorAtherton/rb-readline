@@ -204,7 +204,7 @@ module RbReadline
    :t_quit,:t_susp,:t_dsusp,:t_start,:t_stop,:t_lnext,:t_flush,:t_status).new
    @_rl_last_tty_chars = nil
 
-   @_keyboard_input_timeout = 0.1
+   @_keyboard_input_timeout = 0.001
 
    # Variables exported by this file.
    # The character that represents the start of a history expansion

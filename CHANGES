@@ -3,6 +3,7 @@
 * Enhancements:
   * Provides access to readline line_buffer (to support Bond).
   * Initial support for gemification of the library.
+  * Reduce keyboard input delay to kill sluggishness.
 
 === 0.3.0 / 2010-12-27
 
