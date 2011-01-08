@@ -1118,15 +1118,34 @@ module RbReadline
             @directory = nil
          end
          text.delete!(0.chr)
-         @filename = text.dup
          if text.length == 0
             text = "."
          end
-         @dirname = File.dirname(text)
-         # We aren't done yet.  We also support the "~user" syntax.
 
-         # Save the version of the directory that the user typed.
-         @users_dirname = @dirname.dup
+         @filename = ''
+         @directory = nil
+         dir = text.dup
+         # We also support "~user" and "~/" syntax.
+         if (dir[0,1] == '~')
+            @users_dirname = dir.dup
+            dir = File.expand_path(dir)
+         end
+
+         # Try the whole thing as a directory and if that fails, try dirname
+         # and basename.  If that doesn't work either, then it wasn't meant to
+         # be; we don't have a directory to open or a filename to complete.
+         if File.directory?(dir) and File.readable?(dir)
+            @directory = Dir.new(dir)
+            @dirname = dir.dup
+         elsif File.directory?(File.dirname(dir)) and File.readable?(File.dirname(dir))
+            @directory = Dir.new(File.dirname(dir))
+            @dirname = File.dirname(dir)
+            @filename = File.basename(dir)
+         end
+
+         # Save the version of the directory that the user typed if we didn't
+         # have a reason to do so before
+         @users_dirname ||= @dirname.dup
 
          if (@dirname[0,1] == '~')
             @dirname = File.expand_path(@dirname)
@@ -1134,15 +1153,13 @@ module RbReadline
 
          # The directory completion hook should perform any necessary
          #   dequoting.
-         if (@rl_directory_completion_hook && send(rl_directory_completion_hook,@dirname))
-            @users_dirname = @dirname.dup
+         if (@rl_directory_completion_hook)
+            send(rl_directory_completion_hook,@dirname)
          elsif (@rl_completion_found_quote && @rl_filename_dequoting_function)
             # delete single and double quotes
-            @temp = send(@rl_filename_dequoting_function,@users_dirname, @rl_completion_quote_character)
+            temp = send(@rl_filename_dequoting_function,@users_dirname, @rl_completion_quote_character)
             @users_dirname = temp
          end
-
-         @directory = Dir.new(@dirname)
 
          # Now dequote a non-null filename.
          if (@filename && @filename.length>0 && @rl_completion_found_quote && @rl_filename_dequoting_function)
@@ -1197,15 +1214,13 @@ module RbReadline
          if (@dirname != '.')
             if (@rl_complete_with_tilde_expansion && @users_dirname[0,1] == "~")
                temp = @dirname
-               if(temp[-1,1] != '/')
-                  temp += '/'
-               end
             else
                temp = @users_dirname
-               if(temp[-1,1] != '/')
-                  temp += '/'
-               end
             end
+
+            # make sure the directory name has a trailing slash before
+            # appending the file name
+            temp += '/' if (temp[-1,1] != '/')
             temp += entry
          else
             temp = entry.dup
