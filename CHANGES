@@ -1,6 +1,7 @@
-=== (In Git)
+=== 0.4.0 / 2011-01-10
 
 * Enhancements:
+  * Provides convenience gem for 3rd parties.
   * Provides access to readline line_buffer (to support Bond).
   * Initial support for gemification of the library.
   * Reduce keyboard input delay to kill sluggishness.
