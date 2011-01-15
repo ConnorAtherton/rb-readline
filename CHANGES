@@ -1,4 +1,23 @@
-=== (In Git)
+=== 0.4.0 / 2011-01-10
+
+* Enhancements:
+  * Provides convenience gem for 3rd parties.
+  * Provides access to readline line_buffer (to support Bond).
+  * Initial support for gemification of the library.
+  * Reduce keyboard input delay to kill sluggishness.
+
+=== 0.3.0 / 2010-12-27
+
+* Enhancements:
+  * Yield procesor to other threads on Windows. [jduck]
+
+* Bugfixes:
+  * Fix 1.8 and 1.9 code compatibility issues. [jduck]
+  * Changes on Encoding detection. [jduck]
+  * Handle ^L properly. [jduck]
+  * Instance variable/typos cleanup. [jduck]
+
+=== 0.2.2 / 2010-10-19
 
 * Enhancements:
   * Implemented missing _rl_input_available. [Spakman]
@@ -6,6 +25,7 @@
 
 * Bugfixes:
   * Fix bugs in the reverse search. Closes GH-14. [Spakman]
+  * Do not eval inputrc defitions. Closes GH-17
 
 === 0.2.1 / 2010-08-22
 
