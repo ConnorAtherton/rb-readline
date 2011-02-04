@@ -774,7 +774,7 @@ module RbReadline
    @rl_num_chars_to_read = 0
 
    # Line buffer and maintenence.
-   @rl_line_buffer = nil
+   @rl_line_buffer = ""
 
    # Key sequence `contexts'
    @_rl_kscxt = nil
