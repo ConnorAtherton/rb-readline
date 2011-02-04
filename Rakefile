@@ -56,3 +56,6 @@ task :install => :gem do
     sh %{gem install --local pkg/#{spec.name}-#{spec.version}}
   end
 end
+
+desc "The default is to test everything."
+task :default => :test
