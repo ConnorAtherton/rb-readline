@@ -60,3 +60,5 @@ task :install => :gem do
   end
 end
 
+desc "The default is to test everything."
+task :default => :test
