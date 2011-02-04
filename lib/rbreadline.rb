@@ -4845,7 +4845,7 @@ module RbReadline
          text = nil
       end
       @rl_end -= diff
-      @rl_line_buffer[@rl_end] = 0.chr
+      @rl_line_buffer[@rl_end,1] = 0.chr
       return (diff)
    end
 
