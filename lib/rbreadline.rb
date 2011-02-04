@@ -3692,7 +3692,7 @@ module RbReadline
    end
 
    def rl_line_buffer
-      @rl_line_buffer.tr(0.chr, '')
+      @rl_line_buffer ? @rl_line_buffer.tr(0.chr, '') : nil
    end
 
    # Tell the update routines that we have moved onto a new (empty) line.
