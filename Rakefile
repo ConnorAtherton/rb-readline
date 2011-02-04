@@ -1,7 +1,9 @@
 require 'rubygems/package_task'
 require 'rake/testtask'
 
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
+ROOT_DIR = File.dirname(__FILE__)
+
+$:.unshift File.join(ROOT_DIR, 'lib')
 require 'rbreadline'
 
 spec = Gem::Specification.new do |s|
@@ -50,3 +52,11 @@ Rake::TestTask.new do |t|
   t.warning = true
   t.verbose = true
 end
+
+desc "Install the gem locally"
+task :install => :gem do
+  Dir.chdir(ROOT_DIR) do
+    sh %{gem install --local pkg/#{spec.name}-#{spec.version}}
+  end
+end
+
