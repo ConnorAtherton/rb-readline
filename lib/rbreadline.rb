@@ -15,7 +15,7 @@ module RbReadline
 
    RL_LIBRARY_VERSION = "5.2"
    RL_READLINE_VERSION  = 0x0502
-   RB_READLINE_VERSION = "0.4.0"
+   RB_READLINE_VERSION = "0.4.0.a"
 
    EOF = "\xFF"
    ESC = "\C-["
@@ -4845,7 +4845,7 @@ module RbReadline
          text = nil
       end
       @rl_end -= diff
-      @rl_line_buffer[@rl_end] = 0.chr
+      @rl_line_buffer[@rl_end] = 0.chr if @rl_line_buffer[@rl_end]
       return (diff)
    end
 
