@@ -774,7 +774,7 @@ module RbReadline
    @rl_num_chars_to_read = 0
 
    # Line buffer and maintenence.
-   @rl_line_buffer = nil
+   @rl_line_buffer = ''
 
    # Key sequence `contexts'
    @_rl_kscxt = nil
@@ -3692,7 +3692,12 @@ module RbReadline
    end
 
    def rl_line_buffer
-      @rl_line_buffer ? @rl_line_buffer.tr(0.chr, '') : nil
+      @rl_line_buffer.tr(0.chr, '')
+   end
+
+   # Sets the current line buffer
+   def rl_line_buffer=(new_value)
+      @rl_line_buffer = new_value
    end
 
    # Tell the update routines that we have moved onto a new (empty) line.
@@ -4845,7 +4850,7 @@ module RbReadline
          text = nil
       end
       @rl_end -= diff
-      @rl_line_buffer[@rl_end] = 0.chr if @rl_line_buffer[@rl_end]
+      @rl_line_buffer[@rl_end,1] = 0.chr
       return (diff)
    end
 
