@@ -43,8 +43,11 @@ authors to write their own interface as they see fit.
 = Tutorial
 
 For an excellent tutorial on how to use Readline in practice, please see
-Joseph Pecoraro's examples at http://bogojoker.com/readline/. There is also
-documentation by Michael Fellinger at http://p.ramaze.net/18421.md.
+Joseph Pecoraro's examples at http://bogojoker.com/readline/. 
+
+There is also documentation by Michael Fellinger alleged to be at
+http://p.ramaze.net/18421.md . However p.ramaze.net has been removed a
+while ago. Let us know if you know where this document has moved to.
 
 = Alternatives
 
