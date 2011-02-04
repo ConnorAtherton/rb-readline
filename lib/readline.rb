@@ -1,5 +1,5 @@
 # readline.rb -- GNU Readline module
-# Copyright (C) 1997-2001  Shugo Maed
+# Copyright (C) 1997-2001  Shugo Maeda
 #
 # Ruby translation by Park Heesob phasis@gmail.com
 
