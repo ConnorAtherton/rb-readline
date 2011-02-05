@@ -3695,11 +3695,6 @@ module RbReadline
       @rl_line_buffer.tr(0.chr, '')
    end
 
-   # Sets the current line buffer
-   def rl_line_buffer=(new_value)
-      @rl_line_buffer = new_value
-   end
-
    # Tell the update routines that we have moved onto a new (empty) line.
    def rl_on_new_line()
       if (@visible_line)
@@ -4911,7 +4906,7 @@ module RbReadline
    end
 
    # Replace the current line buffer contents with TEXT.  If CLEAR_UNDO is
-   #   non-zero, we free the current undo list.
+   # set, we free the current undo list.
    def rl_replace_line(text, clear_undo)
       len = text.delete(0.chr).length
       @rl_line_buffer = text.dup + 0.chr
