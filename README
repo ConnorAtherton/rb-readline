@@ -12,7 +12,7 @@ of the standard library.
     line = Readline::readline('> ')
     Readline::HISTORY.push(line)
     puts "You typed: #{line}"
-    break if line == 'quit'
+    break if line.nil? || line == 'quit'
   end
 
 = Motivation
