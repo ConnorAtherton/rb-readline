@@ -45,9 +45,8 @@ authors to write their own interface as they see fit.
 For an excellent tutorial on how to use Readline in practice, please see
 Joseph Pecoraro's examples at http://bogojoker.com/readline/. 
 
-There is also documentation by Michael Fellinger alleged to be at
-http://p.ramaze.net/18421.md . However p.ramaze.net has been removed a
-while ago. Let us know if you know where this document has moved to.
+See also the current Ruby English 1.9 documentation for Readline.
+I can found at http://www.ruby-doc.org/stdlib/libdoc/readline/rdoc/classes/Readline.html
 
 = Alternatives
 
