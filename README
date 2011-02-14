@@ -43,8 +43,10 @@ authors to write their own interface as they see fit.
 = Tutorial
 
 For an excellent tutorial on how to use Readline in practice, please see
-Joseph Pecoraro's examples at http://bogojoker.com/readline/. There is also
-documentation by Michael Fellinger at http://p.ramaze.net/18421.md.
+Joseph Pecoraro's examples at http://bogojoker.com/readline/.
+
+You can also take a look to Ruby 1.9 stdlib Readline documentation at
+http://rubydoc.info/stdlib/readline/1.9.2/frames
 
 = Alternatives
 
