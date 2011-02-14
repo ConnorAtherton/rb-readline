@@ -43,8 +43,12 @@ authors to write their own interface as they see fit.
 = Tutorial
 
 For an excellent tutorial on how to use Readline in practice, please see
-Joseph Pecoraro's examples at http://bogojoker.com/readline/. There is also
-documentation by Michael Fellinger at http://p.ramaze.net/18421.md.
+Joseph Pecoraro's examples at http://bogojoker.com/readline/.
+
+There used to be some good documentation by Michael Fellinger at
+http://p.ramaze.net/18421.md. It is no longer available and the author does not
+have a copy. This was a mostly a translation of the Japanese Ruby stdlib docs.
+Fortunately, the English stdlib documentation is much improved for 1.9.
 
 = Alternatives
 
