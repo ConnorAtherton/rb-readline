@@ -6725,8 +6725,6 @@ module RbReadline
                end
             elsif (@rl_editing_mode != @vi_mode)
                rl_ding()   # There are other matches remaining.
-            else
-              puts 'fallthrough else'
             end
          else
             append_to_match(matches[0], delimiter, quote_char, nontrivial_lcd)
