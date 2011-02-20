@@ -10,6 +10,7 @@ of the standard library.
 
   loop do
     line = Readline::readline('> ')
+    break if line.nil? || line == 'quit'
     Readline::HISTORY.push(line)
     puts "You typed: #{line}"
     break if line.nil? || line == 'quit'
@@ -43,10 +44,10 @@ authors to write their own interface as they see fit.
 = Tutorial
 
 For an excellent tutorial on how to use Readline in practice, please see
-Joseph Pecoraro's examples at http://bogojoker.com/readline/. 
+Joseph Pecoraro's examples at http://bogojoker.com/readline/.
 
-See also the current Ruby English 1.9 documentation for Readline.
-I can found at http://www.ruby-doc.org/stdlib/libdoc/readline/rdoc/classes/Readline.html
+You can also take a look at Ruby 1.9 stdlib Readline documentation located
+at http://rubydoc.info/stdlib/readline/1.9.2/frames
 
 = Alternatives
 

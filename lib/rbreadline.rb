@@ -774,7 +774,11 @@ module RbReadline
    @rl_num_chars_to_read = 0
 
    # Line buffer and maintenence.
+<<<<<<< HEAD
    @rl_line_buffer = ''
+=======
+   @rl_line_buffer = ""
+>>>>>>> 4610e6985c528d99ae018c21cf3c28732463925a
 
    # Key sequence `contexts'
    @_rl_kscxt = nil
