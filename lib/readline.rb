@@ -133,7 +133,7 @@ module Readline
       result[matches+1] = nil
 
       if(matches==1)
-         result[0] = result[1].dup
+         result[0] = (result[1].empty? ? text : result[1]).dup
       else
          i = 1
          low = 100000
