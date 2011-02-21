@@ -6716,7 +6716,7 @@ module RbReadline
          # see if it was a directory.  If so, and the `mark-directories'
          # variable is set, add a '/' to the name.  If not, and we
          # are at the end of the line, then add a space.
-         if (matches[1] && !matches[1].empty?)
+         if (matches[1] && !matches[1].empty? && matches[0] != matches[1])
             if (what_to_do == '!')
                display_matches(matches)
             elsif (what_to_do == '@')
