@@ -1123,6 +1123,7 @@ module RbReadline
             text = "."
          end
          @dirname = File.dirname(text)
+         @filename = File.basename(@filename)
          # We aren't done yet.  We also support the "~user" syntax.
 
          # Save the version of the directory that the user typed.
