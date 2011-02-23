@@ -1104,10 +1104,11 @@ module RbReadline
    :rl_readline_name,:history_length,:history_base
 
    module_function
+
    # Okay, now we write the entry_function for filename completion.  In the
-   #   general case.  Note that completion in the shell is a little different
-   #   because of all the pathnames that must be followed when looking up the
-   #   completion for a command.
+   # general case.  Note that completion in the shell is a little different
+   # because of all the pathnames that must be followed when looking up the
+   # completion for a command.
    def rl_filename_completion_function(text, state)
       # If we don't have any state, then do some initialization.
       if (state == 0)
@@ -1117,12 +1118,19 @@ module RbReadline
             @directory.close
             @directory = nil
          end
+
          text.delete!(0.chr)
-         @filename = text.dup
          if text.length == 0
             text = "."
          end
-         @dirname = File.dirname(text)
+
+         if text.rindex("/") == text.length-1
+            @dirname = text
+            @filename = ""
+         else
+            @dirname, @filename = File.split(text)
+         end
+
          # We aren't done yet.  We also support the "~user" syntax.
 
          # Save the version of the directory that the user typed.
