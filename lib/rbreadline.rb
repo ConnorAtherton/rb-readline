@@ -161,6 +161,10 @@ module RbReadline
    SF_FOUND    = 0x02
    SF_FAILED      = 0x04
 
+   # The platform specific directory separator - probably "/" on Unix-like
+   # systems and "\\" on Windows.
+   DIR_SEPARATOR = File::ALT_SEPARATOR || File::SEPARATOR
+
    @slashify_in_quotes = "\\`\"$"
 
    @sigint_proc = nil
@@ -1124,7 +1128,7 @@ module RbReadline
             text = "."
          end
 
-         if text.rindex("/") == text.length-1
+         if text.rindex(DIR_SEPARATOR) == text.length-1
             @dirname = text
             @filename = ""
          else
@@ -1205,13 +1209,13 @@ module RbReadline
          if (@dirname != '.')
             if (@rl_complete_with_tilde_expansion && @users_dirname[0,1] == "~")
                temp = @dirname
-               if(temp[-1,1] != '/')
-                  temp += '/'
+               if(temp[-1,1] != DIR_SEPARATOR)
+                  temp += DIR_SEPARATOR
                end
             else
                temp = @users_dirname
-               if(temp[-1,1] != '/')
-                  temp += '/'
+               if(temp[-1,1] != DIR_SEPARATOR)
+                  temp += DIR_SEPARATOR
                end
             end
             temp += entry
