@@ -1,0 +1,7 @@
+require 'readline'
+
+loop do
+  line = Readline::readline(ARGV.first)
+  break if line.nil? || line == 'quit'
+  puts "You typed: #{line}"
+end
