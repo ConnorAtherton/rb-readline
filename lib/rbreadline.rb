@@ -15,7 +15,7 @@ module RbReadline
 
    RL_LIBRARY_VERSION = "5.2"
    RL_READLINE_VERSION  = 0x0502
-   RB_READLINE_VERSION = "0.4.0"
+   RB_READLINE_VERSION = "0.4.0.a"
 
    EOF = "\xFF"
    ESC = "\C-["
@@ -1123,6 +1123,7 @@ module RbReadline
             text = "."
          end
          @dirname = File.dirname(text)
+         @filename = File.basename(@filename)
          # We aren't done yet.  We also support the "~user" syntax.
 
          # Save the version of the directory that the user typed.
@@ -4906,7 +4907,7 @@ module RbReadline
    end
 
    # Replace the current line buffer contents with TEXT.  If CLEAR_UNDO is
-   #   non-zero, we free the current undo list.
+   # set, we free the current undo list.
    def rl_replace_line(text, clear_undo)
       len = text.delete(0.chr).length
       @rl_line_buffer = text.dup + 0.chr
@@ -6716,7 +6717,7 @@ module RbReadline
          # see if it was a directory.  If so, and the `mark-directories'
          # variable is set, add a '/' to the name.  If not, and we
          # are at the end of the line, then add a space.
-         if (matches[1])
+         if (matches[1] && !matches[1].empty? && matches[0] != matches[1])
             if (what_to_do == '!')
                display_matches(matches)
             elsif (what_to_do == '@')

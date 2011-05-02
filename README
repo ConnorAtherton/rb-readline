@@ -13,6 +13,7 @@ of the standard library.
     break if line.nil? || line == 'quit'
     Readline::HISTORY.push(line)
     puts "You typed: #{line}"
+    break if line.nil? || line == 'quit'
   end
 
 = Motivation

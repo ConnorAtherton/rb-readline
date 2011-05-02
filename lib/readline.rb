@@ -1,5 +1,5 @@
 # readline.rb -- GNU Readline module
-# Copyright (C) 1997-2001  Shugo Maed
+# Copyright (C) 1997-2001  Shugo Maeda
 #
 # Ruby translation by Park Heesob phasis@gmail.com
 
@@ -133,7 +133,7 @@ module Readline
       result[matches+1] = nil
 
       if(matches==1)
-         result[0] = result[1].dup
+         result[0] = (result[1].empty? ? text : result[1]).dup
       else
          i = 1
          low = 100000
