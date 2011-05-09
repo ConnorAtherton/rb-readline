@@ -1124,7 +1124,7 @@ module RbReadline
             text = "."
          end
 
-         if text.rindex("/") == text.length-1
+         if text.rindex(File::SEPARATOR) == text.length-1
             @dirname = text
             @filename = ""
          else
@@ -1205,12 +1205,12 @@ module RbReadline
          if (@dirname != '.')
             if (@rl_complete_with_tilde_expansion && @users_dirname[0,1] == "~")
                temp = @dirname
-               if(temp[-1,1] != '/')
+               if(temp[-1,1] != File::SEPARATOR)
                   temp += '/'
                end
             else
                temp = @users_dirname
-               if(temp[-1,1] != '/')
+               if(temp[-1,1] != File::SEPARATOR)
                   temp += '/'
                end
             end

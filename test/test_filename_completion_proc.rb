@@ -62,12 +62,12 @@ class TC_FILENAME_COMPLETION_PROC < Test::Unit::TestCase
 
   def test_list_files_in_sub_directories
     entries = @sub_dir.entries.select { |e| e[0,1] == "a" }
-    entries.map! { |e| "#{@sub_dir.path}/#{e}" }
-    assert_equal entries, Readline::FILENAME_COMPLETION_PROC.call("#{@sub_dir.path}/a")
+    entries.map! { |e| "#{@sub_dir.path}#{e}" }
+    assert_equal entries, Readline::FILENAME_COMPLETION_PROC.call("#{@sub_dir.path}a")
 
     entries = @sub_sub_dir.entries - %w( . .. )
-    entries.map! { |e| "#{@sub_sub_dir.path}/#{e}" }
-    assert_equal entries, Readline::FILENAME_COMPLETION_PROC.call("#{@sub_sub_dir.path}/")
+    entries.map! { |e| "#{@sub_sub_dir.path}#{e}" }
+    assert_equal entries, Readline::FILENAME_COMPLETION_PROC.call("#{@sub_sub_dir.path}")
   end
 
   def test_list_files_and_directories_with_spaces
