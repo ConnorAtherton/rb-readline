@@ -1146,8 +1146,9 @@ module RbReadline
             @users_dirname = @dirname.dup
          elsif (@rl_completion_found_quote && @rl_filename_dequoting_function)
             # delete single and double quotes
-            @temp = send(@rl_filename_dequoting_function,@users_dirname, @rl_completion_quote_character)
+            temp = send(@rl_filename_dequoting_function, @users_dirname, @rl_completion_quote_character)
             @users_dirname = temp
+            @dirname = @users_dirname.dup
          end
 
          @directory = Dir.new(@dirname)
@@ -1155,7 +1156,7 @@ module RbReadline
          # Now dequote a non-null filename.
          if (@filename && @filename.length>0 && @rl_completion_found_quote && @rl_filename_dequoting_function)
             # delete single and double quotes
-            temp = send(@rl_filename_dequoting_function,@filename, @rl_completion_quote_character)
+            temp = send(@rl_filename_dequoting_function, @filename, @rl_completion_quote_character)
             @filename = temp
          end
 
