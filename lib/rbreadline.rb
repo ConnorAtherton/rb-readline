@@ -1206,12 +1206,12 @@ module RbReadline
             if (@rl_complete_with_tilde_expansion && @users_dirname[0,1] == "~")
                temp = @dirname
                if(temp[-1,1] != File::SEPARATOR)
-                  temp += '/'
+                  temp += File::SEPARATOR
                end
             else
                temp = @users_dirname
                if(temp[-1,1] != File::SEPARATOR)
-                  temp += '/'
+                  temp += File::SEPARATOR
                end
             end
             temp += entry
