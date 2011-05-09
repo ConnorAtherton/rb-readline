@@ -1,34 +1,48 @@
 require "test/unit"
-require "fileutils"
 require 'timeout'
 require "readline"
+require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
 class TestCompletion < Test::Unit::TestCase
   include RbReadline
+  include FilesystemCompletionHelper
 
   def filename_quoting_function(filename, mtype, quote_char)
+    quoted_filename = filename.dup
     @rl_filename_quote_characters.each_char do |c|
-      filename.gsub!(c, "\\#{c}")
+      quoted_filename.gsub!(c, "\\#{c}")
     end
-    filename
+    quoted_filename
+  end
+
+  def filename_dequoting_function(filename, quote_char = "\\")
+    filename.delete quote_char
   end
 
   def setup
-    FileUtils.mkdir_p "completer_test_dir/a b"
     @rl_completion_word_break_hook, @rl_char_is_quoted_p = nil
     @rl_basic_quote_characters, @rl_special_prefixes = nil
     @rl_completer_word_break_characters = Readline.basic_word_break_characters
     @rl_completer_quote_characters = "\\"
+    @rl_completion_quote_character = "\\"
     @rl_filename_quote_characters = " "
     @rl_byte_oriented = true
     @rl_filename_quoting_desired = true
     @rl_filename_completion_desired = true
+    @rl_complete_with_tilde_expansion = true
+    @_rl_match_hidden_files = false
+    @rl_completion_found_quote = false
+    @directory = nil
 
     @rl_filename_quoting_function = :filename_quoting_function
+    @rl_filename_dequoting_function = :filename_dequoting_function
+    @rl_directory_completion_hook = nil
+
+    setup_filesystem_for_completion
   end
 
   def teardown
-    FileUtils.rm_r "completer_test_dir"
+    teardown_filesystem_after_completion
   end
 
   def set_line_buffer(text)
@@ -38,7 +52,7 @@ class TestCompletion < Test::Unit::TestCase
   end
 
   def test__find_completion_word_doesnt_hang_on_completer_quote_character
-    set_line_buffer "completer_test_dir/a\\ b"
+    set_line_buffer "#{@dir_with_spaces.path}filename\\ w"
 
     assert_nothing_raised do
       Timeout::timeout(3) do
@@ -48,7 +62,7 @@ class TestCompletion < Test::Unit::TestCase
   end
 
   def test__find_completion_word_without_quote_characters
-    set_line_buffer "completer_test_dir/a"
+    set_line_buffer "#{@comp_test_dir.path}a"
     assert_equal([ "\000", false, "\000" ], _rl_find_completion_word)
   end
 
@@ -56,5 +70,18 @@ class TestCompletion < Test::Unit::TestCase
     match = RbReadline::SINGLE_MATCH
 
     assert_equal "dir/with\\ space", make_quoted_replacement("dir/with space", RbReadline::SINGLE_MATCH, 0.chr)
+  end
+
+  def test_rl_filname_completion_function_calls_dequoting_function
+    @rl_completion_found_quote = true
+    dir = filename_quoting_function(@dir_with_spaces.path, nil, 0.chr)
+
+    # rl_filename_completion_function is called with an increasing state in
+    # order to iterate through directory entries.
+    assert_equal "#{@dir_with_spaces.path}filename with spaces", rl_filename_completion_function(dir, 0)
+    assert_equal @sub_dir_with_spaces.path.chop, rl_filename_completion_function(dir, 1)
+    assert_nil rl_filename_completion_function(dir, 2)
+  ensure
+    @rl_completion_found_quote = false
   end
 end

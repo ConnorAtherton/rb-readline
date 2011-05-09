@@ -1,31 +1,11 @@
 require 'test/unit'
 require 'fileutils'
-$LOAD_PATH.unshift "#{File.dirname(__FILE__)}/../lib/"
 require 'readline'
+require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
 class TC_FILENAME_COMPLETION_PROC < Test::Unit::TestCase
+  include FilesystemCompletionHelper
 
-  SEP = File::SEPARATOR
-  COMP_TEST_DIR = "comp_test#{SEP}"
-  SUB_DIR = "#{COMP_TEST_DIR}a_sub_dir#{SEP}"
-  SUB_SUB_DIR = "#{SUB_DIR}another_sub_dir#{SEP}"
-  DIR_WITH_SPACES = "#{COMP_TEST_DIR}dir with spaces#{SEP}"
-  SUB_DIR_WITH_SPACES = "#{DIR_WITH_SPACES}sub_dir with spaces#{SEP}"
-
-  # This creates:
-  #
-  #   comp_test/
-  #     abc
-  #     aaa
-  #     a_sub_dir/
-  #       abc
-  #       aaa
-  #       another_sub_dir/
-  #         aaa
-  #     dir with spaces/
-  #       filename with spaces
-  #       sub dir with spaces/
-  #         another filename with spaces
   def setup
     FileUtils.mkdir_p("#{SUB_SUB_DIR}")
     FileUtils.mkdir_p("#{SUB_DIR_WITH_SPACES}")
@@ -49,10 +29,11 @@ class TC_FILENAME_COMPLETION_PROC < Test::Unit::TestCase
     @sub_sub_dir = Dir.new SUB_SUB_DIR
     @dir_with_spaces = Dir.new DIR_WITH_SPACES
     @sub_dir_with_spaces = Dir.new SUB_DIR_WITH_SPACES
+    setup_filesystem_for_completion
   end
 
   def teardown
-    FileUtils.rm_r(COMP_TEST_DIR)
+    teardown_filesystem_after_completion
   end
 
   def test_listing_files_in_cwd
