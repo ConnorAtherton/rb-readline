@@ -1,3 +1,6 @@
+# This file is the unit test that comes with MRI 1.8 located in
+# test/readline/test_readline.rb
+
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'rb-readline'
 require 'readline'
