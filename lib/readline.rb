@@ -1,5 +1,5 @@
 # readline.rb -- GNU Readline module
-# Copyright (C) 1997-2001  Shugo Maed
+# Copyright (C) 1997-2001  Shugo Maeda
 #
 # Ruby translation by Park Heesob phasis@gmail.com
 
@@ -196,10 +196,8 @@ module Readline
    # Readline.completion_proc method is called.
    #
    def self.completion_append_character()
-      if RbReadline.rl_completion_append_character == ?\0
-         nil
-      end
-      return RbReadline.rl_completion_append_character
+     c = RbReadline.rl_completion_append_character
+     c.kind_of?(Fixnum) ? ("%c" % c) : c
    end
 
    # Sets the character string that signal a break between words for the
