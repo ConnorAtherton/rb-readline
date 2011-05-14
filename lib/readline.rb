@@ -182,13 +182,11 @@ module Readline
    # Sets the character that is automatically appended after the
    # Readline.completion_proc method is called.
    #
-   # If +char+ is nil or empty, then a null character is used.
+   # If +char+ is nil or empty, then +nil+ is used.
    #
    def self.completion_append_character=(char)
-      if char.nil?
-         RbReadline.rl_completion_append_character = ?\0
-      elsif char.length==0
-         RbReadline.rl_completion_append_character = ?\0
+      if char.nil? || char.empty?
+         RbReadline.rl_completion_append_character = nil
       else
          RbReadline.rl_completion_append_character = char[0]
       end
