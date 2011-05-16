@@ -124,6 +124,44 @@ class TC_Readline < Test::Unit::TestCase
       assert_nothing_raised{ Readline.basic_quote_characters = "\"'" }
    end
 
+   def test_attempted_comp_func_returns_nil_when_no_completion_proc_set
+     assert_equal nil, Readline.readline_attempted_completion_function("12", 0, 1)
+   end
+
+   def test_attempted_comp_func_case_folding
+     Readline.completion_proc = Proc.new do |word|
+       %w( 123456 123abc abc123 ).grep(/^#{word}/i)
+     end
+
+     Readline.completion_case_fold = true
+
+     assert_equal [ "123", "123456", "123abc", nil ], Readline.readline_attempted_completion_function("123", 0, 3)
+
+     assert_equal [ "123abc", nil, nil ], Readline.readline_attempted_completion_function("123A", 0, 3)
+
+   ensure
+     Readline.module_eval do
+       @completion_proc = nil
+     end
+   end
+
+   def test_attempted_comp_func_removes_replacement_from_possible_matches
+     Readline.completion_proc = Proc.new do |word|
+       %w( 123456 123abc abc123 ).grep(/^#{word}/)
+     end
+
+     assert_equal [ "123", "123456", "123abc", nil ], Readline.readline_attempted_completion_function("12", 0, 1)
+
+     assert_equal [ "123", "123456", "123abc", nil ], Readline.readline_attempted_completion_function("123", 0, 2)
+
+     assert_equal [ "123456", nil, nil ], Readline.readline_attempted_completion_function("1234", 0, 3)
+
+   ensure
+     Readline.module_eval do
+       @completion_proc = nil
+     end
+   end
+
    def teardown
       @proc = nil
    end
