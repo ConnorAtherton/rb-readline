@@ -47,6 +47,8 @@ class TC_FILENAME_COMPLETION_PROC < Test::Unit::TestCase
     @comp_test_dir = Dir.new COMP_TEST_DIR
     @sub_dir = Dir.new SUB_DIR
     @sub_sub_dir = Dir.new SUB_SUB_DIR
+    @dir_with_spaces = Dir.new DIR_WITH_SPACES
+    @sub_dir_with_spaces = Dir.new SUB_DIR_WITH_SPACES
   end
 
   def teardown
