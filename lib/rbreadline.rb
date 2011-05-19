@@ -1129,6 +1129,11 @@ module RbReadline
             @filename = ""
          else
             @dirname, @filename = File.split(text)
+
+            # This preserves the "./" when the user types "./dirname<tab>".
+            if @dirname == "." && text[0,2] == ".#{File::SEPARATOR}"
+              @dirname += File::SEPARATOR
+            end
          end
 
          # We aren't done yet.  We also support the "~user" syntax.

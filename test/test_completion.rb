@@ -32,6 +32,7 @@ class TestCompletion < Test::Unit::TestCase
     @rl_complete_with_tilde_expansion = true
     @_rl_match_hidden_files = false
     @rl_completion_found_quote = false
+    @_rl_completion_case_fold = false
     @directory = nil
 
     @rl_filename_quoting_function = :filename_quoting_function
@@ -83,5 +84,9 @@ class TestCompletion < Test::Unit::TestCase
     assert_nil rl_filename_completion_function(dir, 2)
   ensure
     @rl_completion_found_quote = false
+  end
+
+  def test_completing_path_starting_dot_slash
+    assert_equal "./#{COMP_TEST_DIR.chop}", rl_filename_completion_function("./#{COMP_TEST_DIR.chop}", 0)
   end
 end
