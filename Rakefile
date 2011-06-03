@@ -28,7 +28,6 @@ spec = Gem::Specification.new do |s|
   s.require_path = 'lib'
 
   # documentation
-  s.has_rdoc = true
   s.rdoc_options << '--main'  << 'README' << '--title' << 'Rb-Readline - Documentation'
 
   s.extra_rdoc_files = %w(README LICENSE CHANGES)
