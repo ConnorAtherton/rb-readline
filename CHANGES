@@ -1,7 +1,13 @@
 === (In Git)
 
 * Bugfixes:
-  * Filename and directory completion procs now works properly. GH-35 [Spakman]
+  * Fix crash with double tab and an empty line buffer. GH-26 [phasis68]
+  * Accessing rl_line_buffer before initialization. GH-27 [phasis68]
+  * Fix hanging bug when completer finds a quote char. [Spakman]
+  * Filename completion on paths with directory components. GH-35 [Spakman]
+  * Attempted completion function now returns correct array. GH-34 [Spakman]
+  * Ensure @rl_filname_dequoting_function is used if defined. [Spakman]
+  * Remove deprecations with recent versions of RubyGems. [luislavena]
 
 === 0.4.0 / 2011-01-10
 
