@@ -1156,7 +1156,10 @@ module RbReadline
             @dirname = @users_dirname.dup
          end
 
-         @directory = Dir.new(@dirname)
+         begin
+            @directory = Dir.new(@dirname)
+         rescue Errno::ENOENT, Errno::ENOTDIR
+         end
 
          # Now dequote a non-null filename.
          if (@filename && @filename.length>0 && @rl_completion_found_quote && @rl_filename_dequoting_function)

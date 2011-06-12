@@ -89,4 +89,12 @@ class TestCompletion < Test::Unit::TestCase
   def test_completing_path_starting_dot_slash
     assert_equal "./#{COMP_TEST_DIR.chop}", rl_filename_completion_function("./#{COMP_TEST_DIR.chop}", 0)
   end
+
+  def test_completing_non_existant_directory
+    assert_nil rl_filename_completion_function("/this/dir/does/not/exist", 0)
+  end
+
+  def test_completing_a_file_as_a_directory
+    assert_nil rl_filename_completion_function("#{File.expand_path(__FILE__)}/", 0)
+  end
 end
