@@ -5,6 +5,17 @@
 
 module Readline
 
+  # Suppress warnings. The main one we encounter is "already initialized
+  # constant" because perhaps another version readline has done that already.
+  def suppress_warnings
+    original_verbosity = $VERBOSE
+    $VERBOSE = nil
+    result = yield
+    $VERBOSE = original_verbosity
+    return result
+  end  
+  module_function :suppress_warnings
+
    require 'rbreadline'
    include RbReadline
 
@@ -444,7 +455,7 @@ module Readline
 
    end
 
-   HISTORY = History
+   suppress_warnings { HISTORY = History }
 
    # The Fcomp class provided to encapsulate typical filename completion
    # procedure. You will not typically use this directly, but will instead
@@ -473,7 +484,7 @@ module Readline
       end
    end
 
-   FILENAME_COMPLETION_PROC = Fcomp
+   suppress_warnings { FILENAME_COMPLETION_PROC = Fcomp }
 
    # The Ucomp class provided to encapsulate typical filename completion
    # procedure. You will not typically use this directly, but will instead
@@ -505,13 +516,13 @@ module Readline
       end
    end
 
-   USERNAME_COMPLETION_PROC = Ucomp
+   suppress_warnings {USERNAME_COMPLETION_PROC = Ucomp }
 
    RbReadline.rl_readline_name = "Ruby"
 
    RbReadline.using_history()
 
-   VERSION = RbReadline.rl_library_version
+   suppress_warnings { VERSION = RbReadline.rl_library_version }
 
    module_function :readline
 
