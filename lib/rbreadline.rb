@@ -807,7 +807,12 @@ module RbReadline
    @_rl_term_goto = nil
    @_rl_term_pc = nil
 
-   # Non-zero if we determine that the terminal can do character insertion.
+   # "An application program can assume that the terminal can do character
+   # insertion if *any one of* the capabilities `IC', `im', `ic' or `ip' is
+   # provided.". But we can't do anything if only `ip' is provided, so...
+   #
+   # Currently rb-readline can't tgoto(). Setting this to false means that
+   # insert_some_chars doesn't get called and some other method is used.
    @_rl_terminal_can_insert = false
 
    # How to insert characters.
@@ -2026,12 +2031,6 @@ module RbReadline
       if (@_rl_screenwidth <= 0 || @_rl_screenheight <= 0)
          _rl_get_screen_size(tty, 0)
       end
-
-      # "An application program can assume that the terminal can do
-      #    character insertion if *any one of* the capabilities `IC',
-      #    `im', `ic' or `ip' is provided."  But we can't do anything if
-      #    only `ip' is provided, so...
-      @_rl_terminal_can_insert = !!(@_rl_term_IC || @_rl_term_im || @_rl_term_ic)
 
       # Check to see if this terminal has a meta key and clear the capability
       #   variables if there is none.
