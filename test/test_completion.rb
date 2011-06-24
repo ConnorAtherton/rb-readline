@@ -79,8 +79,11 @@ class TestCompletion < Test::Unit::TestCase
 
     # rl_filename_completion_function is called with an increasing state in
     # order to iterate through directory entries.
-    assert_equal "#{@dir_with_spaces.path}filename with spaces", rl_filename_completion_function(dir, 0)
-    assert_equal @sub_dir_with_spaces.path.chop, rl_filename_completion_function(dir, 1)
+
+    entries = [ "#{@dir_with_spaces.path}sub dir with spaces", "#{@dir_with_spaces.path}filename with spaces" ]
+
+    assert entries.include?(rl_filename_completion_function(dir, 0))
+    assert entries.include?(rl_filename_completion_function(dir, 1))
     assert_nil rl_filename_completion_function(dir, 2)
   ensure
     @rl_completion_found_quote = false
