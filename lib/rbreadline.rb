@@ -1121,10 +1121,9 @@ module RbReadline
 
          text.delete!(0.chr)
          if text.length == 0
-            text = "."
-         end
-
-         if text.rindex(File::SEPARATOR) == text.length-1
+            @dirname = "."
+            @filename = ""
+         elsif text.rindex(File::SEPARATOR) == text.length-1
             @dirname = text
             @filename = ""
          else

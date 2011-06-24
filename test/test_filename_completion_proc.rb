@@ -62,4 +62,8 @@ class TC_FILENAME_COMPLETION_PROC < Test::Unit::TestCase
     entries.map! { |e| @dir_with_spaces.path + e }
     assert_equal entries, Readline::FILENAME_COMPLETION_PROC.call("#{@dir_with_spaces.path}")
   end
+
+  def test_list_files_in_current_directory
+    assert_equal((Dir.entries(".") - %w( . .. )).sort, Readline::FILENAME_COMPLETION_PROC.call("").sort)
+  end
 end
