@@ -1,7 +1,7 @@
 require 'test/unit'
 require 'readline'
 
-class TC_Readline < Test::Unit::TestCase
+class TestReadline < Test::Unit::TestCase
    def setup
       @proc = proc{ |s| ['alpha', 'beta'].grep( /^#{Regexp.escape(s)}/) }
    end

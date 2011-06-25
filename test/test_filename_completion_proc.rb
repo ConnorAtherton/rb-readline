@@ -3,7 +3,7 @@ require 'fileutils'
 require 'readline'
 require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
-class TC_FILENAME_COMPLETION_PROC < Test::Unit::TestCase
+class TestFilenameCompletionProc < Test::Unit::TestCase
   include FilesystemCompletionHelper
 
   def setup
