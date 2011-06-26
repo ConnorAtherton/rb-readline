@@ -9,7 +9,7 @@ class TestCompletion < Test::Unit::TestCase
 
   def filename_quoting_function(filename, mtype, quote_char)
     quoted_filename = filename.dup
-    @rl_filename_quote_characters.each_char do |c|
+    @rl_filename_quote_characters.split("").each do |c|
       quoted_filename.gsub!(c, "\\#{c}")
     end
     quoted_filename
