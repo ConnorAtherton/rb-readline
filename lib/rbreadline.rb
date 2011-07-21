@@ -195,11 +195,6 @@ module RbReadline
   @noninc_history_pos = 0
   @prev_line_found = nil
 
-  rl_history_search_len = 0
-  rl_history_search_pos = 0
-  history_search_string = nil
-  history_string_size = 0
-
   @_rl_tty_chars = Struct.new(:t_eol,:t_eol2,:t_erase,:t_werase,:t_kill,:t_reprint,:t_intr,:t_eof,
                               :t_quit,:t_susp,:t_dsusp,:t_start,:t_stop,:t_lnext,:t_flush,:t_status).new
   @_rl_last_tty_chars = nil
@@ -1290,7 +1285,6 @@ module RbReadline
   #
   def rl_completion_matches(text, entry_function)
     matches = 0
-    match_list_size = 10
     match_list = []
     match_list[1] = nil
     while (string = send(entry_function, text, matches))
@@ -3238,7 +3232,7 @@ module RbReadline
 
     # Draw the rest of the line (after the prompt) into invisible_line, keeping
     #   track of where the cursor is (cpos_buffer_position), the number of the line containing
-    #   the cursor (lb_linenum), the last line number (lb_botlin and inv_botlin).
+    #   the cursor (lb_linenum), the last line number (inv_botlin).
     #   It maintains an array of line breaks for display (inv_lbreaks).
     #   This handles expanding tabs for display and displaying meta characters.
     lb_linenum = 0
@@ -3440,7 +3434,7 @@ module RbReadline
       lb_linenum = newlines
     end
 
-    inv_botlin = lb_botlin = newlines
+    inv_botlin = newlines
     @inv_lbreaks[newlines+1] = out
     cursor_linenum = lb_linenum
 
@@ -4227,7 +4221,6 @@ module RbReadline
     if (r >= 0)
       _rl_isearch_fini(cxt)
     end
-    ctx = nil
     @_rl_iscxt = nil
 
     rl_unsetstate(RL_STATE_ISEARCH)
@@ -4420,7 +4413,6 @@ module RbReadline
     end
 
     def rl_gather_tyi()
-      chars_avail = 0
       result = select([@rl_instream],nil,nil,0.1)
       return 0 if result.nil?
       k = send(@rl_getc_function,@rl_instream)
@@ -5510,7 +5502,7 @@ module RbReadline
     # Read an entire multibyte character sequence to insert COUNT times.
     if (count > 0 && !@rl_byte_oriented)
       mbkey = ''
-      k = _rl_read_mbstring(c, mbkey, MB_LEN_MAX)
+      _rl_read_mbstring(c, mbkey, MB_LEN_MAX)
     end
     rl_begin_undo_group()
 
@@ -6481,7 +6473,6 @@ module RbReadline
         end
 
         slen = s.length
-        tlen = to_print.length
         new_full_pathname = s.dup
         if (s[-1,1] == '/' )
           slen-=1
@@ -7070,7 +7061,7 @@ module RbReadline
 
     r = -1
     while(true)
-      c = _rl_search_getchar(cxt)
+      _rl_search_getchar(cxt)
       # We might want to handle EOF here (c == 0)
       r = _rl_isearch_dispatch(cxt, cxt.lastc)
       break if (r <= 0)
@@ -7355,7 +7346,7 @@ module RbReadline
   def rl_yank_nth_arg_internal(count, ignore, history_skip)
     pos = where_history()
     if (history_skip>0)
-      history_skip.times { entry = previous_history() }
+      history_skip.times { previous_history() }
     end
     entry = previous_history()
     history_set_pos(pos)
@@ -7560,7 +7551,7 @@ module RbReadline
 
       @rl_point = orig_point
       if (@rl_editing_mode == @emacs_mode)
-        rl_mark = @rl_point
+        @rl_mark = @rl_point
       end
     end
     0
@@ -8580,7 +8571,7 @@ module RbReadline
   #   to _rl_read_mbchar.
   def _rl_read_mbstring(first, mb, mlen)
     c = first
-    for i in 0 ... mlen
+    (0...mlen).each do
       mb << c
       if _rl_get_char_len(mb) == -2
         # Read more for multibyte character

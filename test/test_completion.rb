@@ -68,8 +68,6 @@ class TestCompletion < Test::Unit::TestCase
   end
 
   def test_make_quoted_replacement_calls_filename_quoting_function
-    match = RbReadline::SINGLE_MATCH
-
     assert_equal "dir/with\\ space", make_quoted_replacement("dir/with space", RbReadline::SINGLE_MATCH, 0.chr)
   end
 

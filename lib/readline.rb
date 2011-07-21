@@ -34,8 +34,6 @@ module Readline
     RbReadline.rl_instream = $stdin
     RbReadline.rl_outstream = $stdout
 
-    status = 0
-
     begin
       buff = RbReadline.readline(prompt)
     rescue Exception => e
