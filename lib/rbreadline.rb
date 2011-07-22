@@ -2102,7 +2102,7 @@ module RbReadline
 
     openname = File.expand_path(filename)
     begin
-      buffer = File.open(openname).read
+      buffer = File.open(openname).read.force_encoding("ASCII-8BIT")
     rescue
       return -1
     end
@@ -3126,7 +3126,7 @@ module RbReadline
           end
           line = @invisible_line
         end
-        line[out,@local_prompt_len] = @local_prompt
+        line[out,@local_prompt_len] = @local_prompt.force_encoding("ASCII-8BIT")
         out += @local_prompt_len
       end
       line[out,1] = 0.chr
