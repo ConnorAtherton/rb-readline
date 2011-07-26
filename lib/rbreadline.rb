@@ -1532,7 +1532,7 @@ module RbReadline
     if !@rl_byte_oriented
       dpos = _rl_col_width(data, start, start+new)
 
-      if (dpos > @prompt_last_invisible)     # XXX - don't use woff here
+      if (dpos > @prompt_last_invisible && @prompt_last_invisible > 0)     # XXX - don't use woff here
         dpos -= woff
         # Since this will be assigned to _rl_last_c_pos at the end (more
         #   precisely, _rl_last_c_pos == dpos when this function returns),
@@ -1776,7 +1776,7 @@ module RbReadline
       # The prompt is only one logical line, though it might wrap.
       @local_prompt,@prompt_visible_length,@prompt_last_invisible,@prompt_invis_chars_first_line,@prompt_physical_chars = expand_prompt(prompt)
       @local_prompt_prefix = nil
-      @local_prompt_len = @local_prompt ? @local_prompt.length : 0
+      @local_prompt_len = @local_prompt ? @local_prompt.bytesize : 0
       return (@prompt_visible_length)
     else
       # The prompt spans multiple lines.
@@ -1789,7 +1789,7 @@ module RbReadline
       #final newline is now null-terminated.
       @local_prompt_prefix,@prompt_prefix_length,_,@prompt_invis_chars_first_line, = expand_prompt(prompt)
       prompt[t] = c
-      @local_prompt_len = @local_prompt ? @local_prompt.length : 0
+      @local_prompt_len = @local_prompt ? @local_prompt.bytesize : 0
       return (@prompt_prefix_length)
     end
   end
@@ -2102,7 +2102,7 @@ module RbReadline
 
     openname = File.expand_path(filename)
     begin
-      buffer = File.open(openname).read
+      buffer = File.open(openname).read.force_encoding("ISO-8859-1")
     rescue
       return -1
     end
@@ -2666,8 +2666,8 @@ module RbReadline
     #   emulators.  In this calculation, TEMP is the physical screen
     #   position of the cursor.
     if @encoding == 'X'
-      old.force_encoding('ASCII-8BIT')
-      new.force_encoding('ASCII-8BIT')
+      old.force_encoding('ISO-8859-1')
+      new.force_encoding('ISO-8859-1')
     end
 
     if !@rl_byte_oriented
@@ -2701,7 +2701,7 @@ module RbReadline
             ret = wc.length
             tempwidth = wc.unpack('U').first >= 0x1000 ? 2 : 1
           when 'X'
-            wc = new[0..-1].force_encoding(@encoding_name)[0]
+            wc = new[0..-1].dup.force_encoding(@encoding_name)[0]
             ret = wc.bytesize
             tempwidth = wc.ord >= 0x1000 ? 2 : 1
           else
@@ -2730,7 +2730,7 @@ module RbReadline
               wc = old[ostart..-1].scan(/./mu)[0]
               ret = wc.length
             when 'X'
-              wc = old[ostart..-1].force_encoding(@encoding_name)[0]
+              wc = old[ostart..-1].dup.force_encoding(@encoding_name)[0]
               ret = wc.bytesize
             end
           else
@@ -2790,13 +2790,13 @@ module RbReadline
           old_offset = ostart
           ofd = 0
           nfd = 0
-          while(ofd < omax && old[ostart+ofd,1] != 0.chr &&
+          while(ofd < omax && old[ostart+ofd,1] != 0.chr && ofd == nfd &&
                 _rl_compare_chars(old, old_offset, new, new_offset))
 
-            old_offset = _rl_find_next_mbchar(old, old_offset, 1, MB_FIND_ANY)
-            new_offset = _rl_find_next_mbchar(new, new_offset, 1, MB_FIND_ANY)
-            ofd = old_offset - ostart
-            nfd = new_offset
+            ofd = old.dup.force_encoding(@encoding_name)[old_offset].bytesize
+            nfd = new.dup.force_encoding(@encoding_name)[new_offset].bytesize
+            old_offset += 1
+            new_offset += 1
           end
         end
       end
@@ -3121,12 +3121,12 @@ module RbReadline
             @invisible_line += 0.chr * (@line_size-@invisible_line.length)
           end
           if @encoding=='X'
-            @visible_line.force_encoding('ASCII-8BIT')
-            @invisible_line.force_encoding('ASCII-8BIT')
+            @visible_line.force_encoding('ISO-8859-1')
+            @invisible_line.force_encoding('ISO-8859-1')
           end
           line = @invisible_line
         end
-        line[out,@local_prompt_len] = @local_prompt
+        line[out,@local_prompt_len] = @local_prompt.dup.force_encoding("ISO-8859-1")
         out += @local_prompt_len
       end
       line[out,1] = 0.chr
@@ -3165,8 +3165,8 @@ module RbReadline
           @invisible_line += 0.chr * (@line_size-@invisible_line.length)
         end
         if @encoding=='X'
-          @visible_line.force_encoding('ASCII-8BIT')
-          @invisible_line.force_encoding('ASCII-8BIT')
+          @visible_line.force_encoding('ISO-8859-1')
+          @invisible_line.force_encoding('ISO-8859-1')
         end
 
         line = @invisible_line
@@ -3249,7 +3249,7 @@ module RbReadline
         wc = @rl_line_buffer[0,@rl_end].scan(/./mu)[0]
         wc_bytes = wc ? wc.length : 1
       when 'X'
-        wc = @rl_line_buffer[0,@rl_end].force_encoding(@encoding_name)[0]
+        wc = @rl_line_buffer[0,@rl_end].dup.force_encoding(@encoding_name)[0]
         wc_bytes = wc ? wc.bytesize : 1
       end
     else
@@ -3382,7 +3382,7 @@ module RbReadline
             @cpos_buffer_position = out
             lb_linenum = newlines
           end
-          line[out,wc_bytes] = @rl_line_buffer[_in,wc_bytes]
+          line[out,wc_bytes] = @rl_line_buffer.dup.force_encoding("ISO-8859-1")[_in,wc_bytes]
           out += wc_bytes
           for i in 0 ... wc_width
             lpos+=1
@@ -3393,7 +3393,7 @@ module RbReadline
             end
           end
         else
-          line[out,1] = c
+          line[out,1] = c.dup.force_encoding("ISO-8859-1")[0]
           out += 1
           lpos+=1
           if (lpos >= @_rl_screenwidth)
@@ -3418,7 +3418,7 @@ module RbReadline
           wc = @rl_line_buffer[_in,@rl_end - _in].scan(/./mu)[0]
           wc_bytes = wc ? wc.length : 1
         when 'X'
-          wc = @rl_line_buffer[_in,@rl_end - _in].force_encoding(@encoding_name)[0]
+          wc = @rl_line_buffer.dup.force_encoding("ISO-8859-1")[_in,@rl_end - _in].force_encoding(@encoding_name)[0]
           wc_bytes = wc ? wc.bytesize : 1
         end
 
@@ -3789,7 +3789,11 @@ module RbReadline
     when 'E'
       str[start ... _end].scan(/./me).each {|s| width += s.length }
     when 'X'
-      str[start ... _end].force_encoding(@encoding_name).codepoints.each {|s| width += s > 0x1000 ? 2 : 1 }
+      begin
+        str[start ... _end].dup.force_encoding(@encoding_name).codepoints.each {|s| width += s > 0x1000 ? 2 : 1 }
+      rescue
+        width += str[start ... _end].bytesize
+      end
     end
     width
   end
@@ -6562,7 +6566,7 @@ module RbReadline
           bytes = wc.length
           tempwidth = wc.unpack('U').first >= 0x1000 ? 2 : 1
         when 'X'
-          wc = string[pos,left-pos].force_encoding(@encoding_name)[0]
+          wc = string[pos,left-pos].dup.force_encoding(@encoding_name)[0]
           bytes = wc.bytesize
           tempwidth = wc.ord >= 0x1000 ? 2 : 1
         else
@@ -8467,7 +8471,11 @@ module RbReadline
     when 'U'
       point += str[point..-1].scan(/./mu)[0,count].to_s.length
     when 'X'
-      point += str[point..-1].force_encoding(@encoding_name)[0,count].bytesize
+      if !@rl_byte_oriented
+        point += str.dup.force_encoding("ISO-8859-1")[point..-1].force_encoding(@encoding_name)[0,count].length
+      else
+        point += str[0,count].length
+      end
     else
       point += count
       point = str.length if point >= str.length
@@ -8498,7 +8506,7 @@ module RbReadline
     when 'U'
       string[0,seed].scan(/./mu)[0..-2].to_s.length
     when 'X'
-      string[0,seed].force_encoding(@encoding_name)[0..-2].bytesize
+      string[0,seed].dup.force_encoding(@encoding_name)[0..-2].bytesize
     end
   end
 
@@ -8514,7 +8522,7 @@ module RbReadline
     when 'U'
       buf1[pos1..-1].scan(/./mu)[0] == buf2[pos2..-1].scan(/./mu)[0]
     when 'X'
-      buf1[pos1..-1].force_encoding(@encoding_name)[0] == buf2[pos2..-1].force_encoding(@encoding_name)[0]
+      buf1[pos1..-1].dup.force_encoding(@encoding_name)[0] == buf2[pos2..-1].dup.force_encoding(@encoding_name)[0]
     else
       buf1[pos1] == buf2[pos2]
     end
