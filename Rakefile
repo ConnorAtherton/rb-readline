@@ -37,8 +37,8 @@ spec = Gem::Specification.new do |s|
   s.licenses          = ['BSD']
 
   # author and contributors
-  s.authors     = ['Park Heesob', 'Daniel Berger', 'Luis Lavena']
-  s.email       = ['phasis@gmail.com', 'djberg96@gmail.com', 'luislavena@gmail.com']
+  s.authors     = ['Park Heesob', 'Daniel Berger', 'Luis Lavena', 'Mark Somerville']
+  s.email       = ['phasis@gmail.com', 'djberg96@gmail.com', 'luislavena@gmail.com', 'mark@scottishclimbs.com']
 end
 
 Gem::PackageTask.new(spec) do |pkg|
