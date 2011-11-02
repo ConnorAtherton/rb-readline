@@ -3796,7 +3796,12 @@ module RbReadline
 
   # Write COUNT characters from STRING to the output stream.
   def _rl_output_some_chars(string,start,count)
-    @_rl_out_stream.write(string[start,count])
+    case @encoding
+    when 'X'
+      @_rl_out_stream.write(string[start, count].force_encoding(@encoding_name))
+    else
+      @_rl_out_stream.write(string[start, count])
+    end
   end
 
   # Tell the update routines that we have moved onto a new line with the
