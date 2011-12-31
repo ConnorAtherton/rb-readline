@@ -91,6 +91,25 @@ class TestReadline < Test::Unit::TestCase
     assert_nothing_raised{ Readline.completion_append_character }
   end
 
+  def test_completion_append_character
+    orig_char = Readline.completion_append_character
+    begin
+      [
+        [ "x", "x" ],
+        [ "xyx", "x" ],
+        [ " ", " " ],
+        [ "\t", "\t" ],
+        [ "", nil ],
+      ].each do |data, expected|
+        Readline.completion_append_character = data
+        assert_equal(expected, Readline.completion_append_character,
+          "failed case: [#{data.inspect}, #{expected.inspect}]")
+      end
+    ensure
+      Readline.completion_append_character = orig_char
+    end
+  end
+
   def test_basic_word_break_characters_get_basic
     assert_respond_to(Readline, :basic_word_break_characters)
   end

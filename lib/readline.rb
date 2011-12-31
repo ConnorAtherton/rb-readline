@@ -200,7 +200,7 @@ module Readline
     elsif char.length==0
       RbReadline.rl_completion_append_character = ?\0
     else
-      RbReadline.rl_completion_append_character = char[0]
+      RbReadline.rl_completion_append_character = char[0].chr
     end
   end
 
@@ -209,7 +209,7 @@ module Readline
   #
   def self.completion_append_character()
     if RbReadline.rl_completion_append_character == ?\0
-      nil
+      return nil
     end
     return RbReadline.rl_completion_append_character
   end
