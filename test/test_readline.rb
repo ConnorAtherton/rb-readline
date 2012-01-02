@@ -124,6 +124,28 @@ class TestReadline < Test::Unit::TestCase
     assert_nothing_raised{ Readline.basic_quote_characters = "\"'" }
   end
 
+  def test_some_character_methods
+    expecteds = [" ", " .,|\t", ""]
+    [
+      :basic_word_break_characters,
+      :completer_word_break_characters,
+      :basic_quote_characters,
+      :completer_quote_characters,
+      :filename_quote_characters,
+    ].each do |method|
+      begin
+        saved = Readline.send(method)
+        expecteds.each do |e|
+          Readline.send("#{method}=".to_sym, e)
+          assert_equal(e, Readline.send(method),
+            "failed case #{e.inspect} for method #{method}")
+        end
+      ensure
+        Readline.send("#{method}=".to_sym, saved) if saved
+      end
+    end
+  end
+
   def test_attempted_comp_func_returns_nil_when_no_completion_proc_set
     assert_equal nil, Readline.readline_attempted_completion_function("12", 0, 1)
   end
