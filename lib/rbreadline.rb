@@ -3973,7 +3973,7 @@ module RbReadline
     #   variable isearch-terminators) are used to terminate the search but
     #   not subsequently execute the character as a command.  The default
     #   value is "\033\012" (ESC and C-J).
-    if (cxt.search_terminators.include?(cxt.lastc))
+    if (cxt.search_terminators.include?(cxt.lastc.to_s))
       # ESC still terminates the search, but if there is pending
       #input or if input arrives within 0.1 seconds (on systems
       #with select(2)) it is used as a prefix character
