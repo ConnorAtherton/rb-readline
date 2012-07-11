@@ -209,7 +209,7 @@ module Readline
   #
   def self.completion_append_character()
     if RbReadline.rl_completion_append_character == ?\0
-      nil
+      return nil
     end
     return RbReadline.rl_completion_append_character
   end

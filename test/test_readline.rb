@@ -91,6 +91,25 @@ class TestReadline < Test::Unit::TestCase
     assert_nothing_raised{ Readline.completion_append_character }
   end
 
+  def test_completion_append_character
+    orig_char = Readline.completion_append_character
+    begin
+      [
+        ["x", "x"],
+        ["xyx", "x"],
+        [" ", " "],
+        ["\t", "\t"],
+        ["", nil],
+      ].each do |data, expected|
+        Readline.completion_append_character = data
+        assert_equal(expected, Readline.completion_append_character,
+          "failed case: [#{data.inspect}, #{expected.inspect}]")
+      end
+    ensure
+      Readline.completion_append_character = orig_char
+    end
+  end
+
   def test_basic_word_break_characters_get_basic
     assert_respond_to(Readline, :basic_word_break_characters)
   end
@@ -122,6 +141,28 @@ class TestReadline < Test::Unit::TestCase
 
   def test_basic_quote_characters_set
     assert_nothing_raised{ Readline.basic_quote_characters = "\"'" }
+  end
+
+  def test_some_character_methods
+    expecteds = [" ", " .,|\t", ""]
+    [
+      :basic_word_break_characters,
+      :completer_word_break_characters,
+      :basic_quote_characters,
+      :completer_quote_characters,
+      :filename_quote_characters,
+    ].each do |method|
+      begin
+        saved = Readline.send(method)
+        expecteds.each do |e|
+          Readline.send("#{method}=".to_sym, e)
+          assert_equal(e, Readline.send(method),
+            "failed case #{e.inspect} for method #{method}")
+        end
+      ensure
+        Readline.send("#{method}=".to_sym, saved) if saved
+      end
+    end
   end
 
   def test_attempted_comp_func_returns_nil_when_no_completion_proc_set
