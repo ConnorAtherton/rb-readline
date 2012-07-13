@@ -15,6 +15,13 @@ of the standard library.
     puts "You typed: #{line}"
   end
 
+= Compatibility
+
+rb-readline should work on all Unix-like systems and Windows. It is regularly
+used with MRI 1.8/1.9 and Rubinius. JRuby is not supported and there are no
+plans to support it in the future - it comes bundled with a Java implementation
+of Readline.
+
 = Motivation
 
 First, building the GNU readline library on MS Windows with Visual C++ is
