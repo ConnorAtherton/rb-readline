@@ -3,6 +3,8 @@
 The readline library provides a pure Ruby implementation of the GNU
 readline C library, as well as the Readline extension that ships as part
 of the standard library.
+Please note that rb-readline is not supported on JRuby which has its
+own (presumably even better) support for readline.
 
 = Synopsis
 
