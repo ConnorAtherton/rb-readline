@@ -23,14 +23,14 @@ spec = Gem::Specification.new do |s|
 
   # components, files and paths
   s.files = FileList["{examples,lib,test}/**/*.rb",
-                      "README", "LICENSE", "CHANGES", "Rakefile", "setup.rb"]
+                      "README.rdoc", "LICENSE", "CHANGES", "Rakefile", "setup.rb"]
 
   s.require_path = 'lib'
 
   # documentation
-  s.rdoc_options << '--main'  << 'README' << '--title' << 'Rb-Readline - Documentation'
+  s.rdoc_options << '--main'  << 'README.rdoc' << '--title' << 'Rb-Readline - Documentation'
 
-  s.extra_rdoc_files = %w(README LICENSE CHANGES)
+  s.extra_rdoc_files = %w(README.rdoc LICENSE CHANGES)
 
   # project information
   s.homepage          = 'http://github.com/luislavena/rb-readline'
