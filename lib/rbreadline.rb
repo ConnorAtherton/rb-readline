@@ -1525,14 +1525,16 @@ module RbReadline
   #   DATA is the contents of the screen line of interest; i.e., where
   #   the movement is being done.
   def _rl_move_cursor_relative(new, data, start=0)
-
     woff = w_offset(@_rl_last_v_pos, @wrap_offset)
     cpos = @_rl_last_c_pos
 
     if !@rl_byte_oriented
       dpos = _rl_col_width(data, start, start+new)
 
-      if (dpos > @prompt_last_invisible)     # XXX - don't use woff here
+      # Use NEW when comparing against the last invisible character in the
+      # prompt string, since they're both buffer indices and DPOS is a desired
+      # display position.
+      if (new > @prompt_last_invisible)     # XXX - don't use woff here
         dpos -= woff
         # Since this will be assigned to _rl_last_c_pos at the end (more
         #   precisely, _rl_last_c_pos == dpos when this function returns),
