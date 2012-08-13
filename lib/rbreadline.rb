@@ -3032,15 +3032,36 @@ module RbReadline
         # Copy (new) chars to screen from first diff to last match
         temp = nls - nfd
         if (temp > 0)
+          # If nfd begins at the prompt, or before the invisible characters in
+          # the prompt, we need to adjust _rl_last_c_pos in a multibyte locale
+          # to account for the wrap offset and set cpos_adjusted accordingly.
           _rl_output_some_chars(new,nfd, temp)
-          @_rl_last_c_pos += _rl_col_width(new,nfd,nfd+temp)
+          if !@rl_byte_oriented
+            @_rl_last_c_pos += _rl_col_width(new,nfd,nfd+temp)
+            if current_line == 0 && @wrap_offset && nfd <= @prompt_last_invisible
+              @_rl_last_c_pos -= @wrap_offset
+              @cpos_adjusted = true
+            end
+          else
+            @_rl_last_c_pos += temp
+          end
         end
 
         # Otherwise, print over the existing material.
       else
         if (temp > 0)
+          # If nfd begins at the prompt, or before the invisible characters in
+          # the prompt, we need to adjust _rl_last_c_pos in a multibyte locale
+          # to account for the wrap offset and set cpos_adjusted accordingly.
           _rl_output_some_chars(new,nfd, temp)
           @_rl_last_c_pos += col_temp      # XXX
+          if !@rl_byte_oriented
+            @_rl_last_c_pos += _rl_col_width(new,nfd,nfd+temp)
+            if current_line == 0 && @wrap_offset && nfd <= @prompt_last_invisible
+              @_rl_last_c_pos -= @wrap_offset
+              @cpos_adjusted = true
+            end
+          end
         end
 
         lendiff = (oe) - (ne)
