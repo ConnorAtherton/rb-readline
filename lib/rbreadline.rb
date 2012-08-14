@@ -3974,6 +3974,12 @@ module RbReadline
   def _rl_isearch_dispatch(cxt, c)
     f = nil
 
+    if c.class == Fixnum && c < 0
+      cxt.sflags |= SF_FAILED
+      cxt.history_pos = cxt.last_found_line
+      return -1
+    end
+
     # Translate the keys we do something with to opcodes.
     if (c && @_rl_keymap[c])
       f = @_rl_keymap[c]
@@ -5562,6 +5568,10 @@ module RbReadline
     c = rl_read_key()
     rl_unsetstate(RL_STATE_MOREINPUT)
 
+    if c.class == Fixnum && c < 0
+      return -1
+    end
+
     _rl_insert_char(count, c)
   end
 
@@ -6554,7 +6564,7 @@ module RbReadline
       if (c == 'n' || c == 'N' || c == RUBOUT)
         return (0)
       end
-      if (c == ABORT_CHAR)
+      if (c == ABORT_CHAR || (c.class == Fixnum && c < 0))
         _rl_abort_internal()
       end
       if (for_pager && (c == NEWLINE || c == RETURN))
@@ -7480,6 +7490,10 @@ module RbReadline
     mbchar = ''
     mb_len = _rl_read_mbchar(mbchar, MB_LEN_MAX)
 
+    if (mbchar.class == Fixnum && c < 0) || mbchar == 0.chr
+      return -1
+    end
+
     if (count < 0)
       return (_rl_char_search_internal(-count, bdir, mbchar, mb_len))
     else
@@ -7661,6 +7675,9 @@ module RbReadline
         rl_restore_prompt()
         rl_clear_message()
         rl_unsetstate(RL_STATE_NUMERICARG)
+        if key.class == Fixnum && key < 0
+          return -1
+        end
         return (_rl_dispatch(key, @_rl_keymap))
       end
     end
@@ -8576,9 +8593,13 @@ module RbReadline
     mb_len = 0
     while (mb_len < size)
       rl_setstate(RL_STATE_MOREINPUT)
-      mbchar << rl_read_key()
-      mb_len += 1
+      c = rl_read_key()
       rl_unsetstate(RL_STATE_MOREINPUT)
+
+      break if c.class == Fixnum && c < 0
+
+      mbchar << c
+      mb_len += 1
       case @encoding
       when 'E'
         break unless mbchar.scan(/./me).empty?
@@ -8605,6 +8626,7 @@ module RbReadline
         # Read more for multibyte character
         rl_setstate(RL_STATE_MOREINPUT)
         c = rl_read_key()
+        break if c.class == Fixnum && c < 0
         rl_unsetstate(RL_STATE_MOREINPUT)
       else
         break
