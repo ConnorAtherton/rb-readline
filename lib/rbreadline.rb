@@ -1784,12 +1784,12 @@ module RbReadline
       # The prompt spans multiple lines.
       pi += 1 if prompt.length!=pi+1
       t = pi
-      @local_prompt,@prompt_visible_length,@prompt_last_invisible,_,@prompt_physical_chars = expand_prompt(prompt[pi..-1])
+      @local_prompt,@prompt_visible_length,@prompt_last_invisible,@prompt_invis_chars_first_line,@prompt_physical_chars = expand_prompt(prompt[pi..-1])
       c = prompt[t]
       prompt[t] = 0.chr
       # The portion of the prompt string up to and including the
       #final newline is now null-terminated.
-      @local_prompt_prefix,@prompt_prefix_length,_,@prompt_invis_chars_first_line, = expand_prompt(prompt)
+      @local_prompt_prefix,@prompt_prefix_length,_,_, = expand_prompt(prompt)
       prompt[t] = c
       @local_prompt_len = @local_prompt ? @local_prompt.length : 0
       return (@prompt_prefix_length)
