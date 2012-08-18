@@ -2919,12 +2919,19 @@ module RbReadline
       end
     end
 
+    o_cpos = @_rl_last_c_pos
+
     # When this function returns, _rl_last_c_pos is correct, and an absolute
     #   cursor postion in multibyte mode, but a buffer index when not in a
     #   multibyte locale.
     _rl_move_cursor_relative(ofd, old, ostart)
 
-    if (current_line == 0 && !@rl_byte_oriented && @_rl_last_c_pos == @prompt_physical_chars)
+    # We need to indicate that the cursor position is correct in the presence
+    # of invisible characters in the prompt string.  Let's see if setting this
+    # when we make sure we're at the end of the drawn prompt string works.
+    if (current_line == 0 && !@rl_byte_oriented &&
+        (@_rl_last_c_pos > 0 || o_cpos > 0) &&
+        @_rl_last_c_pos == @prompt_physical_chars)
       @cpos_adjusted = true
     end
 
@@ -3621,7 +3628,7 @@ module RbReadline
           else
             tx = nleft
           end
-          if (@_rl_last_c_pos > tx)
+          if tx >= 0 && @_rl_last_c_pos > tx
             _rl_backspace(@_rl_last_c_pos - tx) # XXX
             @_rl_last_c_pos = tx
           end
