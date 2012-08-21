@@ -3086,7 +3086,6 @@ module RbReadline
           _rl_output_some_chars(new,nfd, temp)
           @_rl_last_c_pos += col_temp      # XXX
           if !@rl_byte_oriented
-            @_rl_last_c_pos += _rl_col_width(new,nfd,nfd+temp)
             if current_line == 0 && @wrap_offset && nfd <= @prompt_last_invisible
               @_rl_last_c_pos -= @wrap_offset
               @cpos_adjusted = true
