@@ -8503,13 +8503,33 @@ module RbReadline
 
     case @encoding
     when 'E'
-      pos = string.scan(/./me).inject(0){|r,x| r<point ? r += x.length : r }
+      x = string.scan(/./me)
+      i, len = 0, x.length
+      while (pos < point && i < len)
+        pos += x[i].length
+        i += 1
+      end
     when 'S'
-      pos = string.scan(/./ms).inject(0){|r,x| r<point ? r += x.length : r }
+      x = string.scan(/./ms)
+      i, len = 0, x.length
+      while (pos < point && i < len)
+        pos += x[i].length
+        i += 1
+      end
     when 'U'
-      pos = string.scan(/./mu).inject(0){|r,x| r<point ? r += x.length : r }
+      x = string.scan(/./mu)
+      i, len = 0, x.length
+      while (pos < point && i < len)
+        pos += x[i].length
+        i += 1
+      end
     when 'X'
-      pos = string.dup.force_encoding(@encoding_name).chars.inject(0){|r,x| r<point ? r += x.bytesize : r }
+      str = string.dup.force_encoding(@encoding_name)
+      i, len = 0, str.length
+      while (pos < point && i < len)
+        pos += str[i].bytesize
+        i += 1
+      end
     else
       pos = point
     end
