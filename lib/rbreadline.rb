@@ -4486,7 +4486,7 @@ module RbReadline
 
   if (Object.const_defined?('Encoding') and Encoding.respond_to?('default_external'))
     @encoding = "X"      # ruby 1.9.x or greater
-    @encoding_name = Encoding.default_external.to_s
+    @encoding_name = Encoding.default_external
   end
 
   @rl_byte_oriented = @encoding == "N"
