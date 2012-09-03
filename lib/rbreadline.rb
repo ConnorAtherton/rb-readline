@@ -8524,12 +8524,27 @@ module RbReadline
         i += 1
       end
     when 'X'
-      str = string.dup.force_encoding(@encoding_name)
-      i, len = 0, str.length
-      while (pos < point && i < len)
-        pos += str[i].bytesize
-        i += 1
+      enc = string.encoding
+      str = string.force_encoding(@encoding_name)
+      len = str.length
+      if point <= length / 2
+        # count byte size from head
+        i = 0
+        while (pos < point && i < len)
+          pos += str[i].bytesize
+          i += 1
+        end
+      else
+        # count byte size from tail
+        pos = str.bytesize
+        i = len - 1
+        while (pos > point && i >= 0)
+          pos -= str[i].bytesize
+          i -= 1
+        end
+        pos += str[i + 1].bytesize if pos < point
       end
+      string.force_encoding(enc)
     else
       pos = point
     end
