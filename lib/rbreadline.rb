@@ -3521,7 +3521,8 @@ module RbReadline
         #   OFFSET (which has already been calculated above).
 
         # For each line in the buffer, do the updating display.
-        for linenum in  0 .. inv_botlin
+        linenum = 0
+        while linenum <= inv_botlin
           # This can lead us astray if we execute a program that changes
           #the locale from a non-multibyte to a multibyte one.
           o_cpos = @_rl_last_c_pos
@@ -3561,6 +3562,8 @@ module RbReadline
           if (linenum == 0)
             @visible_first_line_len = (inv_botlin > 0) ? @inv_lbreaks[1] : out - @wrap_offset
           end
+
+          linenum += 1
         end
 
         # We may have deleted some lines.  If so, clear the left over
