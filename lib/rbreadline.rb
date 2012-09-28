@@ -2772,13 +2772,6 @@ module RbReadline
     if (!@rl_byte_oriented)
       # See if the old line is a subset of the new line, so that the
       # only change is adding characters.
-      if (index = old.index(0.chr)) && omax+ostart>index
-        omax = index - ostart
-      end
-      if (index = new.index(0.chr)) && nmax>index
-        nmax = index
-      end
-
       temp = (omax < nmax) ? omax : nmax
       if old[ostart,temp]==new[0,temp]
         ofd = temp
