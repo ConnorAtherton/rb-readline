@@ -6515,7 +6515,6 @@ module RbReadline
   #   are using it, check for and output a single character for `special'
   #   filenames.  Return the number of characters we output.
   def print_filename(to_print, full_pathname)
-    extension_char = 0.chr
     printed_len = fnprint(to_print)
 
     if (@rl_filename_completion_desired && (@rl_visible_stats || @_rl_complete_mark_directories))
