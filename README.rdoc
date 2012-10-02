@@ -67,3 +67,4 @@ compatibility mode.
 * Park Heesob (C translation, code donated as part of bounty)
 * Daniel Berger (Documentation and testing)
 * Luis Lavena (Maintainer)
+* Mark Somerville (Maintainer)
