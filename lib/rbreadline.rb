@@ -7483,6 +7483,39 @@ module RbReadline
     retval
   end
 
+  def history_arg_extract(first, last, string)
+    if first != "$" || last != "$"
+      fail "RbReadline.history_arg_extract called with currently unsupported args."
+    end
+
+    # Find the last index of an unescaped quote character.
+    last_unescaped_quote_char = -1
+    RbReadline::HISTORY_QUOTE_CHARACTERS.each_char do |quote_char|
+      quote_char = Regexp.escape(quote_char)
+      if index = string =~ /(?:\\.|[^#{quote_char}\\])#{quote_char} *$/
+        last_unescaped_quote_char = index if index > last_unescaped_quote_char
+      end
+    end
+    last_unescaped_quote_char += 1 # Because of the regex used above.
+
+    # Find the last index of an unescaped word delimiter.
+    delimiters = RbReadline::HISTORY_WORD_DELIMITERS.chars.to_a.map { |d| Regexp.escape(d) }
+    unless last_unescaped_delimiter = string =~ /(?:\\.|[^#{delimiters.join}])+? *$/
+      last_unescaped_delimiter = 0
+    end
+
+    if last_unescaped_quote_char >= last_unescaped_delimiter
+      quoted_arg = _extract_last_quote(string, string[last_unescaped_quote_char,1])
+    end
+    quoted_arg or string[last_unescaped_delimiter...string.length]
+  end
+
+  def _extract_last_quote(string, quote_char)
+    quote_char = Regexp.escape(quote_char)
+    string =~ /(#{quote_char}(?:\\.|[^#{quote_char}])+?#{quote_char}) *$/
+    $1
+  end
+
   def _rl_char_search_internal(count, dir, smbchar, len)
     pos = @rl_point
     inc = (dir < 0) ? -1 : 1
