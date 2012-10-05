@@ -2306,8 +2306,7 @@ module RbReadline
     when "editing-mode"
       case value
       when "vi"
-        @_rl_keymap = @vi_insertion_keymap
-        @rl_editing_mode = @vi_mode
+        # This is a NOOP until the rest of Vi-mode is working.
       when "emacs"
         @_rl_keymap = @emacs_standard_keymap
         @rl_editing_mode = @emacs_mode
@@ -2319,9 +2318,9 @@ module RbReadline
       when "emacs","emacs-standard","emacs-meta","emacs-ctlx"
         @_rl_keymap = @emacs_standard_keymap
       when "vi","vi-move","vi-command"
-        @_rl_keymap = @vi_movement_keymap
+        # This is a NOOP until the rest of Vi-mode is working.
       when "vi-insert"
-        @_rl_keymap = @vi_insertion_keymap
+        # This is a NOOP until the rest of Vi-mode is working.
       end
     end
   end
