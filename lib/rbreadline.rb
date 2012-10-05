@@ -3823,8 +3823,12 @@ module RbReadline
   def _rl_col_width(string,start,_end)
     return 0 if _end <= start
 
-    index = string.index(0.chr)
-    str = index ? string[0,index] : string
+    # Find the first occurance of 0.chr, which marks the end of the string.
+    # Because newlines are also in the string as 0.chrs (they are tracked
+    # seperately), we need to ignore any 0.chrs that lie before _end.
+    index = string[_end...string.length].index(0.chr)
+
+    str = index ? string[0,index+_end] : string
     width = 0
 
     case @encoding
