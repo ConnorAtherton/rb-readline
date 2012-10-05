@@ -1418,10 +1418,8 @@ module RbReadline
   end
 
 
+  # This is a NOOP until the rest of Vi-mode is working.
   def rl_vi_editing_mode(count, key)
-    _rl_set_insert_mode(RL_IM_INSERT, 1)    # vi mode ignores insert mode
-    @rl_editing_mode = @vi_mode
-    rl_vi_insertion_mode(1, key)
     0
   end
 
