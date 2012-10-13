@@ -66,4 +66,14 @@ class TestFilenameCompletionProc < Test::Unit::TestCase
   def test_list_files_in_current_directory
     assert_equal((Dir.entries(".") - %w( . .. )).sort, Readline::FILENAME_COMPLETION_PROC.call("").sort)
   end
+
+  def test_listing_files_with_no_read_access
+    FileUtils.mkdir("test_no_access")
+    FileUtils.touch("test_no_access/123")
+    FileUtils.chmod(0333, "test_no_access")
+    assert_nil Readline::FILENAME_COMPLETION_PROC.call("test_no_access/")
+  ensure
+    FileUtils.chmod(0775, "test_no_access")
+    FileUtils.rm_r("test_no_access")
+  end
 end

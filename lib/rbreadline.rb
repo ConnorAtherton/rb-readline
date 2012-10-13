@@ -1157,7 +1157,7 @@ module RbReadline
 
       begin
         @directory = Dir.new(@dirname)
-      rescue Errno::ENOENT, Errno::ENOTDIR
+      rescue Errno::ENOENT, Errno::ENOTDIR, Errno::EACCES
       end
 
       # Now dequote a non-null filename.
