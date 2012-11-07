@@ -2102,7 +2102,10 @@ module RbReadline
 
     openname = File.expand_path(filename)
     begin
-      buffer = File.open(openname).read
+      buffer = nil
+      File.open(openname) do |file|
+        buffer = file.read
+      end
     rescue
       return -1
     end
