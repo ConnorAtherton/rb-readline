@@ -6878,13 +6878,13 @@ module RbReadline
 
   def block_sigint()
     return if @sigint_blocked
-    #@sigint_proc = Signal.trap("INT","IGNORE")
+    @sigint_proc = Signal.trap("INT", "IGNORE")
     @sigint_blocked = true
   end
 
   def release_sigint()
     return if !@sigint_blocked
-    #Signal.trap("INT",@sigint_proc)
+    Signal.trap("INT", @sigint_proc)
     @sigint_blocked = false
   end
 
