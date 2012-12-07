@@ -1859,7 +1859,10 @@ module RbReadline
       @_rl_screenwidth = wc
       @_rl_screenheight = wr
     else
-      wr,wc = `stty size`.split(' ').map{|x| x.to_i}
+      wr, wc = 0
+      retry_if_interrupted do
+        wr, wc = `stty size`.split(' ').map { |x| x.to_i }
+      end
       @_rl_screenwidth = wc
       @_rl_screenheight = wr
       if ignore_env==0 && ENV['LINES']
@@ -2046,7 +2049,10 @@ module RbReadline
   # New public way to set the system default editing chars to their readline
   #   equivalents.
   def rl_tty_set_default_bindings(kmap)
-    h = Hash[*`stty -a`.scan(/(\w+) = ([^;]+);/).flatten]
+    h = {}
+    retry_if_interrupted do
+      h = Hash[*`stty -a`.scan(/(\w+) = ([^;]+);/).flatten]
+    end
     h.each {|k,v| v.gsub!(/\^(.)/){($1[0].ord ^ ((?a..?z).include?($1[0]) ? 0x60 : 0x40)).chr}}
     kmap[h['erase']] = :rl_rubout
     kmap[h['kill']] = :rl_unix_line_discard
@@ -6888,9 +6894,22 @@ module RbReadline
     @sigint_blocked = false
   end
 
+  def retry_if_interrupted(&block)
+    tries = 0
+    begin
+      yield block
+    rescue Errno::EINTR
+      tries += 1
+      retry if tries <= 10
+    end
+  end
+
   def save_tty_chars()
     @_rl_last_tty_chars = @_rl_tty_chars
-    h = Hash[*`stty -a`.scan(/(\w+) = ([^;]+);/).flatten]
+    h = {}
+    retry_if_interrupted do
+      h = Hash[*`stty -a`.scan(/(\w+) = ([^;]+);/).flatten]
+    end
     h.each {|k,v| v.gsub!(/\^(.)/){($1[0].ord ^ ((?a..?z).include?($1[0]) ? 0x60 : 0x40)).chr}}
     @_rl_tty_chars.t_erase = h['erase']
     @_rl_tty_chars.t_kill = h['kill']
@@ -6908,7 +6927,9 @@ module RbReadline
     @_rl_tty_chars.t_werase = h['werase']
     @_rl_tty_chars.t_lnext = h['lnext']
     @_rl_tty_chars.t_status = -1
-    @otio = `stty -g`
+    retry_if_interrupted do
+      @otio = `stty -g`
+    end
   end
 
   def _rl_bind_tty_special_chars(kmap)
@@ -6919,7 +6940,9 @@ module RbReadline
   end
 
   def prepare_terminal_settings(meta_flag)
-    @readline_echoing_p = (`stty -a`.scan(/-*echo\b/).first == 'echo')
+    retry_if_interrupted do
+      @readline_echoing_p = (`stty -a`.scan(/-*echo\b/).first == 'echo')
+    end
 
     # First, the basic settings to put us into character-at-a-time, no-echo
     #   input mode.
@@ -6928,8 +6951,10 @@ module RbReadline
     # If this terminal doesn't care how the 8th bit is used, then we can
     #   use it for the meta-key.  If only one of even or odd parity is
     #  specified, then the terminal is using parity, and we cannot.
-    if (`stty -a`.scan(/-parenb\b/).first == '-parenb')
-      setting << " pass8"
+    retry_if_interrupted do
+      if (`stty -a`.scan(/-parenb\b/).first == '-parenb')
+        setting << " pass8"
+      end
     end
 
     setting << " -ixoff"
@@ -6939,7 +6964,9 @@ module RbReadline
 
     #setting << " -isig"
 
-    `stty #{setting}`
+    retry_if_interrupted do
+      `stty #{setting}`
+    end
   end
 
   def _rl_control_keypad(on)
@@ -7026,7 +7053,9 @@ module RbReadline
     @rl_outstream.flush
 
     # restore terminal setting
-    `stty #{@otio}`
+    retry_if_interrupted do
+      `stty #{@otio}`
+    end
 
     @terminal_prepped = false
     rl_unsetstate(RL_STATE_TERMPREPPED)
