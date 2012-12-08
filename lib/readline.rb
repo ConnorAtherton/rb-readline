@@ -1,3 +1,5 @@
+# encoding: US-ASCII
+#
 # readline.rb -- GNU Readline module
 # Copyright (C) 1997-2001  Shugo Maeda
 #

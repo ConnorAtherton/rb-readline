@@ -1,3 +1,5 @@
+# encoding: US-ASCII
+#
 # rbreadline.rb -- a general facility for reading lines of input
 #   with emacs style editing and completion.
 
