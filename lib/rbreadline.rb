@@ -1103,7 +1103,7 @@ module RbReadline
     :rl_basic_word_break_characters,:rl_completer_quote_characters,
     :rl_completer_word_break_characters,:rl_completion_append_character,
     :rl_filename_quote_characters,:rl_instream,:rl_library_version,:rl_outstream,
-    :rl_readline_name,:history_length,:history_base
+    :rl_readline_name,:history_length,:history_base,:rl_point
 
   module_function
 
@@ -8893,7 +8893,7 @@ module RbReadline
     :rl_basic_word_break_characters=,:rl_completer_quote_characters=,
     :rl_completer_word_break_characters=,:rl_completion_append_character=,
     :rl_filename_quote_characters=,:rl_instream=,:rl_library_version=,:rl_outstream=,
-    :rl_readline_name=,:history_length,:history_base
+    :rl_readline_name=,:history_length,:history_base,:rl_point
 
   def no_terminal?
     term = ENV["TERM"]
