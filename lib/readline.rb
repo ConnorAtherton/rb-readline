@@ -305,6 +305,12 @@ module Readline
     end
   end
 
+  # Returns the current offset in the current input line.
+  #
+  def self.point()
+    RbReadline.rl_point
+  end
+
   # The History class encapsulates a history of all commands entered by
   # users at the prompt, providing an interface for inspection and retrieval
   # of all commands.
