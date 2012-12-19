@@ -3016,7 +3016,7 @@ module RbReadline
         # If nfd begins before any invisible characters in the prompt, adjust
         # _rl_last_c_pos to account for wrap_offset and set cpos_adjusted to
         # let the caller know.
-        if current_line == 0 && @wrap_offset && nfd <= prompt_last_invisible
+        if current_line == 0 && @wrap_offset && nfd <= @prompt_last_invisible
           @_rl_last_c_pos -= @wrap_offset
           @cpos_adjusted = true
         end
@@ -3049,7 +3049,7 @@ module RbReadline
           # If nfd begins before any invisible characters in the prompt, adjust
           # _rl_last_c_pos to account for wrap_offset and set cpos_adjusted to
           # let the caller know.
-          if current_line == 0 && @wrap_offset && nfd <= prompt_last_invisible
+          if current_line == 0 && @wrap_offset && nfd <= @prompt_last_invisible
             @_rl_last_c_pos -= @wrap_offset
             @cpos_adjusted = true
           end
