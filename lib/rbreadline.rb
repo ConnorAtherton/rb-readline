@@ -1525,7 +1525,7 @@ module RbReadline
   #   DATA is the contents of the screen line of interest; i.e., where
   #   the movement is being done.
   def _rl_move_cursor_relative(new, data, start=0)
-    woff = wrap_offset(@_rl_last_v_pos, @wrap_offset)
+    woff = w_offset(@_rl_last_v_pos, @wrap_offset)
     cpos = @_rl_last_c_pos
 
     if !@rl_byte_oriented
@@ -1534,11 +1534,7 @@ module RbReadline
       # Use NEW when comparing against the last invisible character in the
       # prompt string, since they're both buffer indices and DPOS is a desired
       # display position.
-      if ((new > @prompt_last_invisible) ||       # XXX - don't use woff here
-          (@prompt_physical_chars > @_rl_screenwidth &&
-           @_rl_last_v_pos == @prompt_last_screen_line &&
-           @wrap_offset != woff &&
-           new > (@prompt_last_invisible - @_rl_screenwidth - @wrap_offset)))
+      if (new > @prompt_last_invisible)     # XXX - don't use woff here
         dpos -= woff
         # Since this will be assigned to _rl_last_c_pos at the end (more
         #   precisely, _rl_last_c_pos == dpos when this function returns),
@@ -2624,32 +2620,6 @@ module RbReadline
     (c == ' ' || c == "\t")
   end
 
-  # This is the INVIS_FIRST macro from GNU Readline.
-  def invis_first
-    if @prompt_physical_chars > @_rl_screenwidth
-      @prompt_invis_chars_first_line
-    else
-      @wrap_offset
-    end
-  end
-
-  # This is the WRAP_OFFSET macro from GNU Readline.
-  def wrap_offset(line, offset)
-    if line == 0
-      if offset
-        invis_first
-      else
-        0
-      end
-    else
-      if line == @prompt_last_screen_line
-        @wrap_offset - @prompt_invis_chars_first_line
-      else
-        0
-      end
-    end
-  end
-
   def w_offset(line, offset)
     ((line) == 0 ? offset : 0)
   end
@@ -2713,7 +2683,7 @@ module RbReadline
     if !@rl_byte_oriented
       temp = @_rl_last_c_pos
     else
-      temp = @_rl_last_c_pos - wrap_offset(@_rl_last_v_pos, @visible_wrap_offset)
+      temp = @_rl_last_c_pos - w_offset(@_rl_last_v_pos, @visible_wrap_offset)
     end
     if (temp == @_rl_screenwidth && @_rl_term_autowrap && !@_rl_horizontal_scroll_mode &&
         @_rl_last_v_pos == current_line - 1)
@@ -3063,12 +3033,7 @@ module RbReadline
           # reported against bash-3.0-alpha by Andreas Schwab involving
           # multibyte characters and prompt strings with invisible
           # characters, but was previously disabled.
-          if @rl_byte_oriented
-            twidth = _rl_col_width(new, nfd + lendiff, nfd + lendiff + temp - col_lendiff)
-          else
-            twidth = temp - lendiff
-          end
-          @_rl_last_c_pos += twidth
+          @_rl_last_c_pos += _rl_col_width(new,nfd+lendiff, nfd+lendiff+temp-col_lendiff)
         end
       else
         # cannot insert chars, write to EOL
@@ -3571,14 +3536,7 @@ module RbReadline
               @_rl_last_c_pos != o_cpos &&
               @_rl_last_c_pos > @wrap_offset &&
               o_cpos < @prompt_last_invisible)
-            @_rl_last_c_pos -= @prompt_invis_chars_first_line       # XXX - was wrap_offset
-          elsif (linenum == @prompt_last_screen_line &&
-                 @prompt_physical_chars > @_rl_screenwidth &&
-                 @rl_byte_oriented) &&
-                 !@cpos_adjusted &&
-                 @_rl_last_c_pos != o_cpos &&
-                 @_rl_last_c_pos > (@prompt_last_invisible - @_rl_screenwidth - @prompt_invis_chars_first_line)
-            @_rl_last_c_pos -= (@wrap_offset - @prompt_invis_chars_first_line)
+            @_rl_last_c_pos -= @wrap_offset
           end
 
           # If this is the line with the prompt, we might need to
