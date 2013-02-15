@@ -3575,6 +3575,7 @@ module RbReadline
           elsif (linenum == @prompt_last_screen_line &&
                  @prompt_physical_chars > @_rl_screenwidth &&
                  @rl_byte_oriented) &&
+                 !@cpos_adjusted &&
                  @_rl_last_c_pos != o_cpos &&
                  @_rl_last_c_pos > (@prompt_last_invisible - @_rl_screenwidth - @prompt_invis_chars_first_line)
             @_rl_last_c_pos -= (@wrap_offset - @prompt_invis_chars_first_line)
