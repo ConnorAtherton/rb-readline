@@ -1,3 +1,27 @@
+=== (in Git)
+
+* Enhancements:
+  * Port GNU Readline-5.2 (patches 003-010)
+
+* Bugfixes:
+  * Fix cursor position when scrolling through history
+  * _rl_adjust_point: improve performance
+  * Display issue scrolling past long lines. Fixes #69
+  * Exception when scolling through long lines. Fixes #73
+  * Correctly align directory name completion results
+  * Disable Vi-mode. Fixes #51
+  * Close the Readline init file after use
+  * Be explicit about source file encoding
+  * Unload Readline before loading rb-readline
+  * Removed unused variable warnings under 1.9.3-dev
+
+* Internal:
+  * dos2unix all files
+  * README is RDoc
+  * Consistently name test classes
+  * Don't use String#each_char in the tests
+  * Re-indented to the Ruby standard of two spaces
+
 === 0.4.2 / 2011-11-01
 
 * Bugfixes:
