@@ -1,4 +1,9 @@
-=== (In Git)
+=== 0.4.2 / 2011-11-01
+
+* Bugfixes:
+  * Use encoding for Ruby 1.9.x to solve non-ascii input. GH-58 [phasis68]
+
+=== 0.4.1 / 2011-07-29
 
 * Bugfixes:
   * Fix crash with double tab and an empty line buffer. GH-26 [phasis68]
