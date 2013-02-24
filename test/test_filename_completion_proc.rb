@@ -1,6 +1,7 @@
 require 'test/unit'
 require 'fileutils'
 require 'readline'
+require "rbconfig"
 require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
 class TestFilenameCompletionProc < Test::Unit::TestCase
@@ -70,10 +71,17 @@ class TestFilenameCompletionProc < Test::Unit::TestCase
   def test_listing_files_with_no_read_access
     FileUtils.mkdir("test_no_access")
     FileUtils.touch("test_no_access/123")
+
+    skip "chmod is noop in Windows" if windows?
+
     FileUtils.chmod(0333, "test_no_access")
     assert_nil Readline::FILENAME_COMPLETION_PROC.call("test_no_access/")
   ensure
     FileUtils.chmod(0775, "test_no_access")
     FileUtils.rm_r("test_no_access")
+  end
+
+  def windows?
+    RbConfig::CONFIG["host_os"] =~ /mingw|mswin/
   end
 end
