@@ -1,4 +1,4 @@
-=== 0.5.0.pre.1 / 2013-02-24
+=== 0.5.0 / 2013-04-28
 
 * Enhancements:
   * Port GNU Readline-5.2 (patches 003-010)
@@ -21,6 +21,7 @@
   * Consistently name test classes
   * Don't use String#each_char in the tests
   * Re-indented to the Ruby standard of two spaces
+  * Previously released as 0.5.0.pre.1 (2013-02-24)
 
 === 0.4.2 / 2011-11-01
 
