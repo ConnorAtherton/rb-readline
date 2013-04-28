@@ -17,7 +17,7 @@ module RbReadline
 
   RL_LIBRARY_VERSION = "5.2"
   RL_READLINE_VERSION  = 0x0502
-  RB_READLINE_VERSION = "0.5.0.pre.1"
+  RB_READLINE_VERSION = "0.5.0"
 
   EOF = "\xFF"
   ESC = "\C-["
