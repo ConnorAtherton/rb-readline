@@ -1091,8 +1091,8 @@ module RbReadline
   @current_readline_init_lineno = 0
 
   ENV["HOME"] ||= "#{ENV["HOMEDRIVE"]}#{ENV["HOMEPATH"]}"
-  if ENV["HOME"].empty?
-    raise RuntimeError.new("HOME environment variable (or HOMEDRIVE and HOMEPATH) must be set")
+  if !File.directory? ENV["HOME"]
+    raise RuntimeError.new("HOME environment variable (or HOMEDRIVE and HOMEPATH) must be set and point to a directory")
   end
 
   @directory = nil
