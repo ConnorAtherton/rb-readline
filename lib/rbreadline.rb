@@ -4373,7 +4373,7 @@ module RbReadline
         CALL_TYPE_TO_ABI = {:stdcall => 1, :cdecl => 1, nil => 1} #Taken from Fiddle::Importer
 
         def initialize(dllname, func, import, export = "0", calltype = :stdcall)
-          @proto = [import].join.tr("VPpNnLlIi", "0SSI").sub(/^(.)0*$/, '\1').split('')
+          @proto = import.join.tr("VPpNnLlIi", "0SSI").chomp('0').split('')
           handle = DLL[dllname] ||= Fiddle.dlopen(dllname)
           @func = Fiddle::Function.new(handle[func], TYPEMAP.values_at(*@proto), CALL_TYPE_TO_ABI[calltype])
         end
