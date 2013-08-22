@@ -8189,7 +8189,7 @@ module RbReadline
     case (c)
     when "\C-W"
       rl_unix_word_rubout(1, c)
-    when "\C-W"
+    when "\C-U"
       rl_unix_line_discard(1, c)
     when RETURN,NEWLINE
       return 0
