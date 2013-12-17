@@ -14,8 +14,12 @@ class TestReadline < MiniTest::Test
     assert_respond_to(Readline, :readline)
   end
 
-  def test_readline_expected_errors
-    assert_raises(ArgumentError) { Readline.readline }
+  def test_readline_with_default_parameters_does_not_error
+    thread = Thread.new { Readline.readline }
+    sleep 0.1
+    assert thread.alive?
+  ensure
+    thread.kill
   end
 
   def test_input_basic
