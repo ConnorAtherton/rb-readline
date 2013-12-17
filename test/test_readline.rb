@@ -1,7 +1,7 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'readline'
 
-class TestReadline < Test::Unit::TestCase
+class TestReadline < MiniTest::Test
   def setup
     @proc = proc{ |s| ['alpha', 'beta'].grep( /^#{Regexp.escape(s)}/) }
   end
@@ -15,7 +15,7 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_readline_expected_errors
-    assert_raise(ArgumentError){ Readline.readline }
+    assert_raises(ArgumentError) { Readline.readline }
   end
 
   def test_input_basic
@@ -23,7 +23,8 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_input
-    assert_nothing_raised{ Readline.input = $stdin }
+    Readline.input = $stdin
+    assert_equal $stdin, RbReadline.rl_instream
   end
 
   def test_output_basic
@@ -31,7 +32,8 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_output
-    assert_nothing_raised{ Readline.output = $stdout }
+    Readline.output = $stdout
+    assert_equal $stdout, RbReadline.rl_outstream
   end
 
   def test_completion_proc_get_basic
@@ -43,7 +45,8 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_completion_proc
-    assert_nothing_raised{ Readline.completion_proc = @proc }
+    Readline.completion_proc = @proc
+    assert_equal @proc, Readline.completion_proc
   end
 
   def test_completion_case_fold_get_basic
@@ -59,12 +62,13 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_completion_case_fold_changed
-    assert_nothing_raised{ Readline.completion_case_fold = false }
+    Readline.completion_case_fold = false
+    refute Readline.completion_case_fold
   end
 
   def test_completion_proc_expected_errors
-    assert_raise(ArgumentError){ Readline.completion_proc = 1 }
-    assert_raise(ArgumentError){ Readline.completion_proc = 'a' }
+    assert_raises(ArgumentError) { Readline.completion_proc = 1 }
+    assert_raises(ArgumentError) { Readline.completion_proc = 'a' }
   end
 
   def test_vi_editing_mode_basic
@@ -88,7 +92,7 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_completion_append_character_set
-    assert_nothing_raised{ Readline.completion_append_character }
+    assert_equal " ", Readline.completion_append_character
   end
 
   def test_completion_append_character
@@ -123,7 +127,9 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_basic_word_break_characters_set
-    assert_nothing_raised{ Readline.basic_word_break_characters = " \t\n\"\\'`@$><=|&{(" }
+    chars = " \t\n\"\\'`@$><=|&{("
+    Readline.basic_word_break_characters = chars
+    assert_equal chars, Readline.basic_word_break_characters
   end
 
   def test_basic_quote_characters_get_basic
@@ -131,8 +137,7 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_basic_quote_characters_get
-    assert_nothing_raised{ Readline.basic_quote_characters }
-    assert_equal("\"'", Readline.basic_quote_characters)
+    assert_equal "\"'", Readline.basic_quote_characters
   end
 
   def test_basic_quote_characters_set_basic
@@ -140,7 +145,9 @@ class TestReadline < Test::Unit::TestCase
   end
 
   def test_basic_quote_characters_set
-    assert_nothing_raised{ Readline.basic_quote_characters = "\"'" }
+    chars = "\"'"
+    Readline.basic_quote_characters = chars
+    assert_equal chars, Readline.basic_quote_characters
   end
 
   def test_some_character_methods

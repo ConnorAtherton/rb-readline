@@ -1,10 +1,10 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'fileutils'
 require 'readline'
 require "rbconfig"
 require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
-class TestFilenameCompletionProc < Test::Unit::TestCase
+class TestFilenameCompletionProc < MiniTest::Test
   include FilesystemCompletionHelper
 
   def setup

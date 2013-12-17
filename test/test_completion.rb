@@ -1,9 +1,9 @@
-require "test/unit"
+require "minitest/autorun"
 require 'timeout'
 require "readline"
 require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
-class TestCompletion < Test::Unit::TestCase
+class TestCompletion < MiniTest::Test
   include RbReadline
   include FilesystemCompletionHelper
 
@@ -55,10 +55,8 @@ class TestCompletion < Test::Unit::TestCase
   def test__find_completion_word_doesnt_hang_on_completer_quote_character
     set_line_buffer "#{@dir_with_spaces.path}filename\\ w"
 
-    assert_nothing_raised do
-      Timeout::timeout(3) do
-        assert_equal([ "\000", true, "\000" ], _rl_find_completion_word)
-      end
+    Timeout::timeout(3) do
+      assert_equal([ "\000", true, "\000" ], _rl_find_completion_word)
     end
   end
 
