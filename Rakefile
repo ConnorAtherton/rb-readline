@@ -42,7 +42,6 @@ spec = Gem::Specification.new do |s|
 end
 
 Gem::PackageTask.new(spec) do |pkg|
-  pkg.need_zip = true
 end
 
 Rake::TestTask.new do |t|
