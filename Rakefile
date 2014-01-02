@@ -2,7 +2,7 @@ require 'rubygems/package_task'
 require 'rake/testtask'
 
 $:.unshift File.join(File.dirname(__FILE__), 'lib')
-require 'rbreadline'
+require "rbreadline/version"
 
 spec = Gem::Specification.new do |s|
   # basic information

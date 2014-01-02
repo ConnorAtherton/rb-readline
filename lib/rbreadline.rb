@@ -8,6 +8,8 @@
 #  Copyright (C) 2009 by Park Heesob phasis@gmail.com
 #
 
+require "rbreadline/version"
+
 class Fixnum
   def ord; self; end
 end
@@ -17,7 +19,6 @@ module RbReadline
 
   RL_LIBRARY_VERSION = "5.2"
   RL_READLINE_VERSION  = 0x0502
-  RB_READLINE_VERSION = "0.5.0"
 
   EOF = "\xFF"
   ESC = "\C-["
