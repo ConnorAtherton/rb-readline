@@ -1,7 +1,7 @@
 require "minitest/autorun"
 require "readline"
 
-class TestHistory < MiniTest::Test
+class TestHistory < Minitest::Test
 
   # RbReadline::HISTORY_WORD_DELIMITERS.inspect
   # => " \t\n;&()|<>"

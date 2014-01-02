@@ -7,6 +7,8 @@ Gem::PackageTask.new(spec) do |pkg|
 end
 
 Rake::TestTask.new do |t|
+  t.libs << "test"
+
   t.warning = true
   t.verbose = true
 end

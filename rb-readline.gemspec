@@ -29,6 +29,7 @@ spec = Gem::Specification.new do |s|
 
   # development dependencies
   s.add_development_dependency 'rake'
+  s.add_development_dependency "minitest", "~> 5.2"
 
   # components, files and paths
   s.files = Dir[

@@ -1,7 +1,7 @@
 require 'minitest/autorun'
 require 'readline'
 
-class TestReadline < MiniTest::Test
+class TestReadline < Minitest::Test
   def setup
     @proc = proc{ |s| ['alpha', 'beta'].grep( /^#{Regexp.escape(s)}/) }
   end

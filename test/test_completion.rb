@@ -1,9 +1,10 @@
 require "minitest/autorun"
-require 'timeout'
 require "readline"
-require "#{File.expand_path(File.dirname(__FILE__))}/filesystem_completion_helper"
 
-class TestCompletion < MiniTest::Test
+require 'timeout'
+require "support/filesystem_completion_helper"
+
+class TestCompletion < Minitest::Test
   include RbReadline
   include FilesystemCompletionHelper
 
