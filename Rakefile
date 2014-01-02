@@ -1,45 +1,7 @@
 require 'rubygems/package_task'
 require 'rake/testtask'
 
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
-require "rbreadline/version"
-
-spec = Gem::Specification.new do |s|
-  # basic information
-  s.name        = "rb-readline"
-  s.version     = RbReadline::RB_READLINE_VERSION
-  s.platform    = Gem::Platform::RUBY
-
-  # description and details
-  s.summary     = 'Pure-Ruby Readline Implementation'
-  s.description = "The readline library provides a pure Ruby implementation of the GNU readline C library, as well as the Readline extension that ships as part of the standard library."
-
-  # requirements
-  s.required_ruby_version = ">= 1.8.6"
-  s.required_rubygems_version = ">= 1.3.5"
-
-  # development dependencies
-  s.add_development_dependency 'rake'
-
-  # components, files and paths
-  s.files = FileList["{examples,lib,test}/**/*.rb",
-                      "README.rdoc", "LICENSE", "CHANGES", "Rakefile", "setup.rb"]
-
-  s.require_path = 'lib'
-
-  # documentation
-  s.rdoc_options << '--main'  << 'README.rdoc' << '--title' << 'Rb-Readline - Documentation'
-
-  s.extra_rdoc_files = %w(README.rdoc LICENSE CHANGES)
-
-  # project information
-  s.homepage          = 'http://github.com/luislavena/rb-readline'
-  s.licenses          = ['BSD']
-
-  # author and contributors
-  s.authors     = ['Park Heesob', 'Daniel Berger', 'Luis Lavena']
-  s.email       = ['phasis@gmail.com', 'djberg96@gmail.com', 'luislavena@gmail.com']
-end
+spec = Gem::Specification.load "rb-readline.gemspec"
 
 Gem::PackageTask.new(spec) do |pkg|
 end
