@@ -4370,25 +4370,24 @@ module RbReadline
     if RUBY_VERSION < '1.9.1'
       require 'Win32API'
     else
-      require 'dl'
+      require 'fiddle'
       class Win32API
         DLL = {}
-        TYPEMAP = {"0" => DL::TYPE_VOID, "S" => DL::TYPE_VOIDP, "I" => DL::TYPE_LONG}
+        TYPEMAP = {"0" => Fiddle::TYPE_VOID, "S" => Fiddle::TYPE_VOIDP, "I" => Fiddle::TYPE_LONG}
+        CALL_TYPE_TO_ABI = {:stdcall => 1, :cdecl => 1, nil => 1} #Taken from Fiddle::Importer
 
         def initialize(dllname, func, import, export = "0", calltype = :stdcall)
-          @proto = [import].join.tr("VPpNnLlIi", "0SSI").sub(/^(.)0*$/, '\1')
-          handle = DLL[dllname] ||= DL.dlopen(dllname)
-          @func = DL::CFunc.new(handle[func], TYPEMAP[export.tr("VPpNnLlIi", "0SSI")], func, calltype)
+          @proto = import.join.tr("VPpNnLlIi", "0SSI").chomp('0').split('')
+          handle = DLL[dllname] ||= Fiddle.dlopen(dllname)
+          @func = Fiddle::Function.new(handle[func], TYPEMAP.values_at(*@proto), CALL_TYPE_TO_ABI[calltype])
         end
 
         def call(*args)
-          import = @proto.split("")
           args.each_with_index do |x, i|
-            args[i], = [x == 0 ? nil : x].pack("p").unpack("l!*") if import[i] == "S"
-            args[i], = [x].pack("I").unpack("i") if import[i] == "I"
+            args[i], = [x == 0 ? nil : x].pack("p").unpack("l!*") if @proto[i] == "S"
+            args[i], = [x].pack("I").unpack("i") if @proto[i] == "I"
           end
-          ret, = @func.call(args)
-          return ret || 0
+          @func.call(*args).to_i || 0
         end
 
         alias Call call
