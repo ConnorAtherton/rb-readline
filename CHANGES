@@ -4,6 +4,10 @@
   * Fix double require issues. Fixes #93, #95 [yui-knk]
   * Use Fiddle to remove deprecation warning of DL. Fixes #90, #87 [Olipro]
 
+* Internal:
+  * Bundler-friendly repository (gemspec and Gemfile) to ease usage
+    and development.
+
 === 0.5.0 / 2013-04-28
 
 * Enhancements:
