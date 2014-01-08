@@ -1,4 +1,4 @@
-=== (In Git)
+=== 0.5.1 / 2014-01-08
 
 * Bugfixes:
   * Fix double require issues. Fixes #93, #95 [yui-knk]
