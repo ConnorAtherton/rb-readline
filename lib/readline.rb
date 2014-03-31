@@ -89,7 +89,7 @@ module Readline
   #    Readline.completion_proc = proc{ |s| list.grep( /^#{Regexp.escape(s)}/) }
   #
   def self.completion_proc=(proc)
-    unless defined? proc.call
+    unless proc.respond_to? :call
       raise ArgumentError,"argument must respond to `call'"
     end
     @completion_proc = proc
