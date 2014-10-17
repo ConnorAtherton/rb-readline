@@ -466,6 +466,7 @@ module RbReadline
       "\ey" => :rl_yank_pop  ,
       "\e~" => :rl_tilde_expand  ,
       "\377" => :rl_backward_kill_word  ,
+      "\e\x7F" => :rl_backward_kill_word,
 
       "\C-x\C-g" => :rl_abort  ,
       "\C-x\C-r" => :rl_re_read_init_file  ,
