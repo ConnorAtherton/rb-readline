@@ -2380,7 +2380,8 @@ module RbReadline
       return :rl_beg_of_line
     else
       if name =~ /^[-a-z]+$/
-        return ('rl_'+name.gsub('-','_')).to_sym
+        method = ('rl_' + name.gsub('-', '_')).to_sym
+        return method if respond_to?(method)
       end
     end
     nil
@@ -2416,7 +2417,8 @@ module RbReadline
 
     if string =~ /"(.*)"\s*:\s*(.*)$/
       key, funname = $1, $2
-      rl_bind_key(key, rl_named_function(funname))
+      func = rl_named_function(funname)
+      rl_bind_key(key, func) if func
     end
 
     0
