@@ -2362,6 +2362,8 @@ module RbReadline
       return :rl_rubout_or_delete
     when "kill-whole-line"
       return :rl_kill_full_line
+    when "next-history"
+      return :rl_get_next_history
     when "non-incremental-forward-search-history"
       return :rl_noninc_forward_search
     when "non-incremental-reverse-search-history"
@@ -2372,6 +2374,8 @@ module RbReadline
       return :rl_noninc_reverse_search_again
     when "redraw-current-line"
       return :rl_refresh_line
+    when "previous-history"
+      return :rl_get_previous_history
     when "self-insert"
       return :rl_insert
     when "undo"
