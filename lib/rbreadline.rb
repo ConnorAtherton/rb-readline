@@ -8434,6 +8434,8 @@ module RbReadline
 
     if (@rl_filename_completion_desired)
       filename = File.expand_path(text)
+      return temp_string_index unless File.exists? filename
+
       s = (nontrivial_match && !@rl_completion_mark_symlink_dirs) ?
         File.lstat(filename) : File.stat(filename)
       if s.directory?
