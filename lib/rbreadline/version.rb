@@ -1,3 +1,3 @@
 module RbReadline
-  RB_READLINE_VERSION = "0.5.1"
+  RB_READLINE_VERSION = "0.6.1"
 end

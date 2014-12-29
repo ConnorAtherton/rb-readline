@@ -16,12 +16,12 @@ spec = Gem::Specification.new do |s|
   s.description = "The readline library provides a pure Ruby implementation of the GNU readline C library, as well as the Readline extension that ships as part of the standard library."
 
   # project information
-  s.homepage          = 'http://github.com/luislavena/rb-readline'
+  s.homepage          = 'http://github.com/ConnorAtherton/rb-readline'
   s.licenses          = ['BSD']
 
   # author and contributors
-  s.authors     = ['Park Heesob', 'Daniel Berger', 'Luis Lavena']
-  s.email       = ['phasis@gmail.com', 'djberg96@gmail.com', 'luislavena@gmail.com']
+  s.authors     = ['Park Heesob', 'Daniel Berger', 'Luis Lavena', 'Connor Atherton']
+  s.email       = ['phasis@gmail.com', 'djberg96@gmail.com', 'luislavena@gmail.com', 'c.liam.atherton@gmail.com']
 
   # requirements
   s.required_ruby_version = ">= 1.8.6"
