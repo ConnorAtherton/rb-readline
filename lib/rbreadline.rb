@@ -2648,7 +2648,7 @@ module RbReadline
   end
 
   def vis_pos(line)
-    @vis_lbreaks[line]
+    @vis_lbreaks[line] || 0
   end
 
   def vis_line(line)
