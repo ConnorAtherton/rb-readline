@@ -6494,7 +6494,7 @@ module RbReadline
   end
 
   def _rl_internal_pager(lines)
-    @rl_outstream.puts "--More--"
+    @rl_outstream.write("--More--")
     @rl_outstream.flush
     i = get_y_or_n(1)
     _rl_erase_entire_line()
