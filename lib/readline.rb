@@ -7,11 +7,11 @@
 
 module Readline
 
-#  if defined? FORCE_REQUIRE_RELATIVE
-#    require_relative 'rbreadline'
-#  else
+  if private_methods.include? :require_relative
+    require_relative 'rbreadline'
+  else
     require 'rbreadline'
-#  end
+  end
 
   include RbReadline
 

@@ -4,10 +4,6 @@
 require 'pp'
 
 if ARGV[0] == 'local'
-  module Readline
-    FORCE_REQUIRE_RELATIVE = true
-  end
-
   require_relative '../lib/readline'
 else
   require 'readline'
