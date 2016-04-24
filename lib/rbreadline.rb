@@ -8,11 +8,11 @@
 #  Copyright (C) 2009 by Park Heesob phasis@gmail.com
 #
 
-if defined? Readline::FORCE_REQUIRE_RELATIVE
-  require_relative "rbreadline/version"
-else
+#if defined? Readline::FORCE_REQUIRE_RELATIVE
+#  require_relative "rbreadline/version"
+#else
   require "rbreadline/version"
-end
+#end
 
 class Fixnum
   def ord; self; end
