@@ -8,7 +8,11 @@
 #  Copyright (C) 2009 by Park Heesob phasis@gmail.com
 #
 
-require "rbreadline/version"
+if defined? Readline::FORCE_REQUIRE_RELATIVE
+  require_relative "rbreadline/version"
+else
+  require "rbreadline/version"
+end
 
 class Fixnum
   def ord; self; end
@@ -4424,7 +4428,13 @@ module RbReadline
     @MessageBeep = Win32API.new("user32","MessageBeep",['L'],'L')
     @GetKeyboardState = Win32API.new("user32","GetKeyboardState",['P'],'L')
     @GetKeyState = Win32API.new("user32","GetKeyState",['L'],'L')
-    @hConsoleHandle = @GetStdHandle.Call(STD_OUTPUT_HANDLE)
+
+    def rl_refresh_console_handle
+      @hConsoleHandle = @GetStdHandle.Call(STD_OUTPUT_HANDLE)
+    end
+
+    rl_refresh_console_handle
+
     @hConsoleInput =  @GetStdHandle.Call(STD_INPUT_HANDLE)
     @pending_count = 0
     @pending_key = nil
@@ -4499,6 +4509,9 @@ module RbReadline
       k = send(@rl_getc_function,@rl_instream)
       rl_stuff_char(k)
       return 1
+    end
+
+    def rl_refresh_console_handle
     end
   end
 
