@@ -2474,6 +2474,17 @@ module RbReadline
       rl_bind_keyseq_if_unbound("\340t", :rl_forward_word) # Ctrl-Right
       rl_bind_keyseq_if_unbound("\340S", :rl_delete) # Delete
       rl_bind_keyseq_if_unbound("\340R", :rl_overwrite_mode) # Insert
+
+      rl_bind_keyseq_if_unbound("\x00H", :rl_get_previous_history) # Up
+      rl_bind_keyseq_if_unbound("\x00P", :rl_get_next_history) # Down
+      rl_bind_keyseq_if_unbound("\x00M", :rl_forward_char)  # Right
+      rl_bind_keyseq_if_unbound("\x00K", :rl_backward_char) # Left
+      rl_bind_keyseq_if_unbound("\x00G", :rl_beg_of_line)   # Home
+      rl_bind_keyseq_if_unbound("\x00O", :rl_end_of_line)   # End
+      rl_bind_keyseq_if_unbound("\x00s", :rl_backward_word) # Ctrl-Left
+      rl_bind_keyseq_if_unbound("\x00t", :rl_forward_word) # Ctrl-Right
+      rl_bind_keyseq_if_unbound("\x00S", :rl_delete) # Delete
+      rl_bind_keyseq_if_unbound("\x00R", :rl_overwrite_mode) # Insert
     else
       rl_bind_keyseq_if_unbound("\033[A", :rl_get_previous_history)
       rl_bind_keyseq_if_unbound("\033[B", :rl_get_next_history)
