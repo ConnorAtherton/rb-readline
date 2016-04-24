@@ -21,8 +21,8 @@ end
 module RbReadline
   require 'etc'
 
-  RL_LIBRARY_VERSION = "5.2"
-  RL_READLINE_VERSION  = 0x0502
+  RL_LIBRARY_VERSION = "5.4"
+  RL_READLINE_VERSION  = 0x0504
 
   EOF = "\xFF"
   ESC = "\C-["
