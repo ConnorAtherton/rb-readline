@@ -455,7 +455,7 @@ module Readline
 
   end
 
-  HISTORY = History
+  HISTORY = History unless const_defined? :HISTORY
 
   # The Fcomp class provided to encapsulate typical filename completion
   # procedure. You will not typically use this directly, but will instead
@@ -483,7 +483,7 @@ module Readline
     end
   end
 
-  FILENAME_COMPLETION_PROC = Fcomp
+  FILENAME_COMPLETION_PROC = Fcomp unless const_defined? :FILENAME_COMPLETION_PROC
 
   # The Ucomp class provided to encapsulate typical filename completion
   # procedure. You will not typically use this directly, but will instead
@@ -514,13 +514,13 @@ module Readline
     end
   end
 
-  USERNAME_COMPLETION_PROC = Ucomp
+  USERNAME_COMPLETION_PROC = Ucomp unless const_defined? :USERNAME_COMPLETION_PROC
 
   RbReadline.rl_readline_name = "Ruby"
 
   RbReadline.using_history()
 
-  VERSION = RbReadline.rl_library_version
+  VERSION = RbReadline.rl_library_version unless const_defined? :VERSION
 
   module_function :readline
 
