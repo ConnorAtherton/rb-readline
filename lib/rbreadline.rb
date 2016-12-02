@@ -2392,9 +2392,54 @@ module RbReadline
     nil
   end
 
+  def rl_translate_keyseq(seq)
+    require 'strscan'
+
+    ss = StringScanner.new(seq)
+    new_seq = ''
+
+    until ss.eos?
+      char = ss.getch
+      next new_seq << char unless char == '\\'
+
+      char = ss.getch
+      new_seq << case char
+                 when 'a'
+                   "\007"
+                 when 'b'
+                   "\b"
+                 when 'd'
+                   RUBOUT
+                 when 'e'
+                   ESC
+                 when 'f'
+                   "\f"
+                 when 'n'
+                   NEWLINE
+                 when 'r'
+                   RETURN
+                 when 't'
+                   TAB
+                 when 'v'
+                   0x0B
+                 when '\\'
+                   '\\'
+                 when 'x'
+                   ss.scan(/\d\d/).to_i(16).chr
+                 when '0'..'7'
+                   ss.pos -= 1
+                   ss.scan(/\d\d\d/).to_i(8).chr
+                 else
+                   char
+                 end
+    end
+
+    new_seq
+  end
+
   # Bind KEY to FUNCTION.  Returns non-zero if KEY is out of range.
   def rl_bind_key(key, function)
-    @_rl_keymap[key] = function
+    @_rl_keymap[rl_translate_keyseq(key)] = function
     @rl_binding_keymap = @_rl_keymap
     0
   end
