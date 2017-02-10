@@ -34,7 +34,7 @@ spec = Gem::Specification.new do |s|
   # components, files and paths
   s.files = Dir[
     "{bench,examples,lib,test}/**/*.rb",
-    "README.rdoc",
+    "README.md",
     "LICENSE",
     "CHANGES",
     "Rakefile",
@@ -45,7 +45,7 @@ spec = Gem::Specification.new do |s|
   s.require_path = 'lib'
 
   # documentation
-  s.rdoc_options << '--main'  << 'README.rdoc' << '--title' << 'Rb-Readline - Documentation'
+  s.rdoc_options << '--main'  << 'README.md' << '--title' << 'Rb-Readline - Documentation'
 
-  s.extra_rdoc_files = %w(README.rdoc LICENSE CHANGES)
+  s.extra_rdoc_files = %w(README.md LICENSE CHANGES)
 end

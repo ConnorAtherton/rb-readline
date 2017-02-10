@@ -1,5 +1,6 @@
 require 'rubygems/package_task'
 require 'rake/testtask'
+require 'bundler/gem_tasks'
 
 spec = Gem::Specification.load "rb-readline.gemspec"
 
