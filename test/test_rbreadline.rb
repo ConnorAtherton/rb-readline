@@ -3,8 +3,8 @@ require 'rbreadline'
 
 class TestRbReadline < Minitest::Test
   def test_versions
-    assert_equal('5.2', RbReadline::RL_LIBRARY_VERSION)
-    assert_equal(0x0502, RbReadline::RL_READLINE_VERSION)
+    assert_equal('5.4', RbReadline::RL_LIBRARY_VERSION)
+    assert_equal(0x0504, RbReadline::RL_READLINE_VERSION)
   end
 
   def test_rl_adjust_point

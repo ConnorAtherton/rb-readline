@@ -7,7 +7,7 @@ class TestReadline < Minitest::Test
   end
 
   def test_version
-    assert_equal('5.2', Readline::VERSION)
+    assert_equal('5.4', Readline::VERSION)
   end
 
   def test_readline_basic

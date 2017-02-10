@@ -7,7 +7,12 @@
 
 module Readline
 
-  require 'rbreadline'
+  if private_methods.include? :require_relative
+    require_relative 'rbreadline'
+  else
+    require 'rbreadline'
+  end
+
   include RbReadline
 
   @completion_proc = nil
@@ -24,8 +29,8 @@ module Readline
   # Because this is meant as an interactive console interface, they should
   # generally not be redirected.
   #
-  # If you would like to add non-visible characters to the the prompt (for 
-  # example to add colors) you must prepend the character \001 (^A) before 
+  # If you would like to add non-visible characters to the the prompt (for
+  # example to add colors) you must prepend the character \001 (^A) before
   # each sequence of non-visible characters and add the character \002 (^B)
   # after, otherwise line wrapping may not work properly.
   #
@@ -40,6 +45,7 @@ module Readline
 
     RbReadline.rl_instream = $stdin
     RbReadline.rl_outstream = $stdout
+    RbReadline.rl_refresh_console_handle
 
     begin
       buff = RbReadline.readline(prompt)

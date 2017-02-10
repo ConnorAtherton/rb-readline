@@ -8,7 +8,11 @@
 #  Copyright (C) 2009 by Park Heesob phasis@gmail.com
 #
 
-require "rbreadline/version"
+if private_methods.include? :require_relative
+  require_relative "rbreadline/version"
+else
+  require "rbreadline/version"
+end
 
 class Integer
   def ord; self; end
@@ -17,8 +21,8 @@ end
 module RbReadline
   require 'etc'
 
-  RL_LIBRARY_VERSION = "5.2"
-  RL_READLINE_VERSION  = 0x0502
+  RL_LIBRARY_VERSION = "5.4"
+  RL_READLINE_VERSION  = 0x0504
 
   EOF = "\xFF"
   ESC = "\C-["
@@ -2515,6 +2519,17 @@ module RbReadline
       rl_bind_keyseq_if_unbound("\340t", :rl_forward_word) # Ctrl-Right
       rl_bind_keyseq_if_unbound("\340S", :rl_delete) # Delete
       rl_bind_keyseq_if_unbound("\340R", :rl_overwrite_mode) # Insert
+
+      rl_bind_keyseq_if_unbound("\x00H", :rl_get_previous_history) # Up
+      rl_bind_keyseq_if_unbound("\x00P", :rl_get_next_history) # Down
+      rl_bind_keyseq_if_unbound("\x00M", :rl_forward_char)  # Right
+      rl_bind_keyseq_if_unbound("\x00K", :rl_backward_char) # Left
+      rl_bind_keyseq_if_unbound("\x00G", :rl_beg_of_line)   # Home
+      rl_bind_keyseq_if_unbound("\x00O", :rl_end_of_line)   # End
+      rl_bind_keyseq_if_unbound("\x00s", :rl_backward_word) # Ctrl-Left
+      rl_bind_keyseq_if_unbound("\x00t", :rl_forward_word) # Ctrl-Right
+      rl_bind_keyseq_if_unbound("\x00S", :rl_delete) # Delete
+      rl_bind_keyseq_if_unbound("\x00R", :rl_overwrite_mode) # Insert
     else
       rl_bind_keyseq_if_unbound("\033[A", :rl_get_previous_history)
       rl_bind_keyseq_if_unbound("\033[B", :rl_get_next_history)
@@ -4469,7 +4484,13 @@ module RbReadline
     @MessageBeep = Win32API.new("user32","MessageBeep",['L'],'L')
     @GetKeyboardState = Win32API.new("user32","GetKeyboardState",['P'],'L')
     @GetKeyState = Win32API.new("user32","GetKeyState",['L'],'L')
-    @hConsoleHandle = @GetStdHandle.Call(STD_OUTPUT_HANDLE)
+
+    def rl_refresh_console_handle
+      @hConsoleHandle = @GetStdHandle.Call(STD_OUTPUT_HANDLE)
+    end
+
+    rl_refresh_console_handle
+
     @hConsoleInput =  @GetStdHandle.Call(STD_INPUT_HANDLE)
     @pending_count = 0
     @pending_key = nil
@@ -4544,6 +4565,9 @@ module RbReadline
       k = send(@rl_getc_function,@rl_instream)
       rl_stuff_char(k)
       return 1
+    end
+
+    def rl_refresh_console_handle
     end
   end
 
