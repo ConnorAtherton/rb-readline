@@ -7016,7 +7016,7 @@ module RbReadline
 
     setting << " -ixoff"
 
-    rl_bind_key(@_rl_tty_chars.t_start, :rl_restart_output)
+    rl_bind_key(@_rl_tty_chars.t_start, :rl_restart_output) unless @_rl_tty_chars.t_start.nil?
     @_rl_eof_char = @_rl_tty_chars.t_eof
 
     #setting << " -isig"
