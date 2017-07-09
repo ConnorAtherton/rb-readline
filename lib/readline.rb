@@ -316,6 +316,16 @@ module Readline
     RbReadline.rl_point
   end
 
+  # Temporarily disable warnings and call a block
+  #
+  def self.silence_warnings(&block)
+    warn_level = $VERBOSE
+    $VERBOSE = nil
+    result = block.call
+    $VERBOSE = warn_level
+    result
+  end
+
   # The History class encapsulates a history of all commands entered by
   # users at the prompt, providing an interface for inspection and retrieval
   # of all commands.
@@ -455,7 +465,7 @@ module Readline
 
   end
 
-  HISTORY = History unless const_defined? :HISTORY
+  silence_warnings { HISTORY = History }
 
   # The Fcomp class provided to encapsulate typical filename completion
   # procedure. You will not typically use this directly, but will instead
@@ -483,7 +493,7 @@ module Readline
     end
   end
 
-  FILENAME_COMPLETION_PROC = Fcomp unless const_defined? :FILENAME_COMPLETION_PROC
+  silence_warnings { FILENAME_COMPLETION_PROC = Fcomp }
 
   # The Ucomp class provided to encapsulate typical filename completion
   # procedure. You will not typically use this directly, but will instead
@@ -514,13 +524,13 @@ module Readline
     end
   end
 
-  USERNAME_COMPLETION_PROC = Ucomp unless const_defined? :USERNAME_COMPLETION_PROC
+  silence_warnings { USERNAME_COMPLETION_PROC = Ucomp }
 
   RbReadline.rl_readline_name = "Ruby"
 
   RbReadline.using_history()
 
-  VERSION = RbReadline.rl_library_version unless const_defined? :VERSION
+  silence_warnings { VERSION = RbReadline.rl_library_version }
 
   module_function :readline
 
