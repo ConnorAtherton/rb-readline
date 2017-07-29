@@ -4436,7 +4436,6 @@ module RbReadline
 
         def call(*args)
           args.each_with_index do |x, i|
-            args[i], = [x == 0 ? nil : x].pack("p").unpack("l!*") if @proto[i] == "S"
             args[i], = [x].pack("I").unpack("i") if @proto[i] == "I"
           end
           @func.call(*args).to_i || 0
@@ -4461,11 +4460,11 @@ module RbReadline
 
     @getch = Win32API.new("msvcrt", "_getch", [], 'I')
     @kbhit = Win32API.new("msvcrt", "_kbhit", [], 'I')
-    @GetStdHandle = Win32API.new("kernel32","GetStdHandle",['L'],'L')
-    @SetConsoleCursorPosition = Win32API.new("kernel32","SetConsoleCursorPosition",['L','L'],'L')
-    @GetConsoleScreenBufferInfo = Win32API.new("kernel32","GetConsoleScreenBufferInfo",['L','P'],'L')
-    @FillConsoleOutputCharacter = Win32API.new("kernel32","FillConsoleOutputCharacter",['L','L','L','L','P'],'L')
-    @ReadConsoleInput = Win32API.new( "kernel32", "ReadConsoleInput", ['L', 'P', 'L', 'P'], 'L' )
+    @GetStdHandle = Win32API.new("kernel32","GetStdHandle",['L'],'P')
+    @SetConsoleCursorPosition = Win32API.new("kernel32","SetConsoleCursorPosition",['P','L'],'L')
+    @GetConsoleScreenBufferInfo = Win32API.new("kernel32","GetConsoleScreenBufferInfo",['P','P'],'L')
+    @FillConsoleOutputCharacter = Win32API.new("kernel32","FillConsoleOutputCharacter",['P','L','L','L','P'],'L')
+    @ReadConsoleInput = Win32API.new( "kernel32", "ReadConsoleInput", ['P', 'P', 'L', 'P'], 'L' )
     @MessageBeep = Win32API.new("user32","MessageBeep",['L'],'L')
     @GetKeyboardState = Win32API.new("user32","GetKeyboardState",['P'],'L')
     @GetKeyState = Win32API.new("user32","GetKeyState",['L'],'L')
