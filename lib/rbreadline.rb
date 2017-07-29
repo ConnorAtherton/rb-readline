@@ -6132,7 +6132,7 @@ module RbReadline
 
   def alloc_history_entry(string, ts)
     temp = Struct.new(:line,:data,:timestamp).new
-    temp.line = string ? string.delete(0.chr) : string
+    temp.line = string ? string.encode('UTF-8', invalid: :replace, undef: :replace, replace: '').delete(0.chr) : string
     temp.data = nil
     temp.timestamp = ts
 
