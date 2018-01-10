@@ -1,0 +1,41 @@
+---
+
+install:
+  - SET PATH=C:\ruby%ruby_version%\bin;C:/Windows/system32
+
+  - ps: |
+      if ($env:ruby_version -like "*head*") {
+        $(new-object net.webclient).DownloadFile("https://github.com/oneclick/rubyinstaller2/releases/download/rubyinstaller-head/rubyinstaller-$env:ruby_version.exe", "$pwd/ruby-setup.exe")
+        cmd /c ruby-setup.exe /verysilent /dir=C:/Ruby$env:ruby_version
+      }
+
+  - ruby --version
+  - gem --version
+
+  - gem install bundler -v 1.16.1 --no-document --conservative --force
+  - bundle install --jobs 3 --retry 3 --path .bundle/gems
+
+build: off
+
+test_script:
+  - bundle exec rake -rdevkit
+
+environment:
+  matrix:
+    - ruby_version: "200"
+    - ruby_version: 200-x64
+    - ruby_version: "21"
+    - ruby_version: 21-x64
+    - ruby_version: "22"
+    - ruby_version: 22-x64
+    - ruby_version: "23"
+    - ruby_version: 23-x64
+    - ruby_version: "24"
+    - ruby_version: 24-x64
+    - ruby_version: head-x86
+    - ruby_version: head-x64
+
+matrix:
+  allow_failures:
+    - ruby_version: head
+    - ruby_version: head-x64
