@@ -106,13 +106,22 @@ class TestReadline < Minitest::Test
         [ "x", "x" ],
         [ "xyx", "x" ],
         [ " ", " " ],
-        [ "\t", "\t" ],
-        [ "", nil ],
+        [ "\t", "\t" ]
       ].each do |data, expected|
         Readline.completion_append_character = data
         assert_equal(expected, Readline.completion_append_character,
           "failed case: [#{data.inspect}, #{expected.inspect}]")
       end
+    ensure
+      Readline.completion_append_character = orig_char
+    end
+  end
+
+  def test_completion_append_character_set_to_nil
+    orig_char = Readline.completion_append_character
+    begin
+      Readline.completion_append_character = ""
+      assert_nil Readline.completion_append_character
     ensure
       Readline.completion_append_character = orig_char
     end
@@ -177,7 +186,7 @@ class TestReadline < Minitest::Test
   end
 
   def test_attempted_comp_func_returns_nil_when_no_completion_proc_set
-    assert_equal nil, Readline.readline_attempted_completion_function("12", 0, 1)
+    assert_nil Readline.readline_attempted_completion_function("12", 0, 1)
   end
 
   def test_attempted_comp_func_case_folding
