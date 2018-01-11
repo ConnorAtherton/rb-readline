@@ -10,8 +10,10 @@
 
 require "rbreadline/version"
 
-class Integer
-  def ord; self; end
+unless 37.respond_to?(:ord)
+  class Integer
+    def ord; self; end
+  end
 end
 
 module RbReadline
@@ -3474,7 +3476,7 @@ module RbReadline
         if (!@rl_byte_oriented)
           _rl_wrapped_multicolumn = 0
           if (@_rl_screenwidth < lpos + wc_width)
-            for i in lpos ... @_rl_screenwidth
+            for _i in lpos ... @_rl_screenwidth
               # The space will be removed in update_line()
               line[out,1] = ' '
               out += 1
@@ -3493,7 +3495,7 @@ module RbReadline
           end
           line[out,wc_bytes] = @rl_line_buffer[_in,wc_bytes]
           out += wc_bytes
-          for i in 0 ... wc_width
+          for _i in 0 ... wc_width
             lpos+=1
             if (lpos >= @_rl_screenwidth)
               @inv_lbreaks[newlines+=1] = out
@@ -5409,7 +5411,7 @@ module RbReadline
   # Make the history entry at WHICH have LINE and DATA.  This returns
   #   the old entry so you can dispose of the data.  In the case of an
   #   invalid WHICH, a NULL pointer is returned.
-  def replace_history_entry (which, line, data)
+  def replace_history_entry(which, line, data)
     if (which < 0 || which >= @history_length)
       return nil
     end
@@ -5492,7 +5494,7 @@ module RbReadline
     0
   end
 
-  def _rl_history_set_point ()
+  def _rl_history_set_point()
     @rl_point = (@_rl_history_preserve_point && @_rl_history_saved_point != -1) ?
       @_rl_history_saved_point : @rl_end
     if (@rl_point > @rl_end)
@@ -5584,7 +5586,6 @@ module RbReadline
 
     if @rl_byte_oriented
       incoming << c
-      incoming_length = 1
     else
       @pending_bytes << c
       if _rl_get_char_len(@pending_bytes) == -2
@@ -5592,7 +5593,6 @@ module RbReadline
       else
         incoming = @pending_bytes
         @pending_bytes = ''
-        incoming_length = incoming.length
       end
     end
 
@@ -7134,7 +7134,7 @@ module RbReadline
 
   # Kill from here to the end of the line.  If DIRECTION is negative, kill
   #   back to the line start instead.
-  def rl_kill_line (direction, ignore)
+  def rl_kill_line(direction, ignore)
     if (direction < 0)
       return (rl_backward_kill_line(1, ignore))
     else
@@ -7778,7 +7778,7 @@ module RbReadline
     0
   end
 
-  def rl_backward_char_search (count, key)
+  def rl_backward_char_search(count, key)
     _rl_char_search(count, BFIND, FFIND)
   end
 
@@ -8087,7 +8087,7 @@ module RbReadline
   end
 
   # Do an anchored search for string through the history in DIRECTION.
-  def history_search_prefix (string, direction)
+  def history_search_prefix(string, direction)
     history_search_internal(string, direction, ANCHORED_SEARCH)
   end
 
