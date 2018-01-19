@@ -1,8 +1,21 @@
 require 'rubygems/package_task'
 require 'rake/testtask'
 require 'bundler/gem_tasks'
+require 'rubocop/rake_task'
 
 spec = Gem::Specification.load "rb-readline.gemspec"
+
+desc 'Run RuboCop'
+RuboCop::RakeTask.new(:rubocop) do |task|
+  # Only run on lib/ files for now, and we can get to the specs later
+  task.patterns = ['lib/**/*.rb']
+
+  # only show the files with failures
+  task.formatters = ['files']
+
+  # don't abort rake on failure
+  task.fail_on_error = false
+end
 
 Gem::PackageTask.new(spec) do |pkg|
 end
@@ -22,4 +35,4 @@ task :install => :gem do
 end
 
 desc "The default is to test everything."
-task :default => :test
+task :default => [:rubocop, :test]
