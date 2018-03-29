@@ -2425,7 +2425,7 @@ module RbReadline
                  when '\\'
                    '\\'
                  when 'x'
-                   ss.scan(/\d\d/).to_i(16).chr
+                   ss.scan(/[0-9a-fA-F]{2}/).to_i(16).chr
                  when '0'..'7'
                    ss.pos -= 1
                    ss.scan(/\d\d\d/).to_i(8).chr
