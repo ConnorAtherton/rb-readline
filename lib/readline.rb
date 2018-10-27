@@ -189,11 +189,23 @@ module Readline
     nil
   end
 
+  # Tests if in vi editing mode.
+  #
+  def self.vi_editing_mode?
+    RbReadline.rl_vi_editing_mode?
+  end
+
   # Sets emacs editing mode
   #
   def self.emacs_editing_mode()
     RbReadline.rl_emacs_editing_mode(1,0)
     nil
+  end
+
+  # Test if in emacs editing mode.
+  #
+  def self.emacs_editing_mode?
+    RbReadline.rl_emacs_editing_mode?
   end
 
   # Sets the character that is automatically appended after the

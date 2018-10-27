@@ -79,8 +79,22 @@ class TestReadline < Minitest::Test
     assert_respond_to(Readline, :vi_editing_mode)
   end
 
+  def test_vi_editing_mode_query_basic
+    assert_respond_to(Readline, :vi_editing_mode?)
+
+    Readline.emacs_editing_mode
+    refute(Readline.vi_editing_mode?)
+  end
+
   def test_emacs_editing_mode_basic
     assert_respond_to(Readline, :emacs_editing_mode)
+  end
+
+  def test_emacs_editing_mode_query_basic
+    assert_respond_to(Readline, :emacs_editing_mode?)
+
+    Readline.emacs_editing_mode
+    assert(Readline.emacs_editing_mode?)
   end
 
   def test_completion_append_character_get_basic
