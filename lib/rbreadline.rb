@@ -1430,6 +1430,10 @@ module RbReadline
     0
   end
 
+  def rl_vi_editing_mode?
+    @rl_editing_mode == @vi_mode
+  end
+
   # Switching from one mode to the other really just involves
   #   switching keymaps.
   def rl_vi_insertion_mode(count, key)
@@ -1443,6 +1447,10 @@ module RbReadline
     _rl_set_insert_mode(RL_IM_INSERT, 1) # emacs mode default is insert mode
     @_rl_keymap = @emacs_standard_keymap
     0
+  end
+
+  def rl_emacs_editing_mode?
+    @rl_editing_mode == @emacs_mode
   end
 
   # Function for the rest of the library to use to set insert/overwrite mode.
