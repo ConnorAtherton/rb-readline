@@ -10,9 +10,13 @@ install:
       }
 
   - ruby --version
+
+  - gem update --system
   - gem --version
 
-  - gem install bundler -v 1.16.1 --no-document --conservative --force
+  - gem install bundler -v 1.17.1 --no-document --conservative --force
+  - bundle --version
+
   - bundle install --jobs 3 --retry 3 --path .bundle/gems
 
 build: off
