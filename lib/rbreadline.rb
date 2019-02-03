@@ -5584,7 +5584,6 @@ module RbReadline
 
     if @rl_byte_oriented
       incoming << c
-      incoming_length = 1
     else
       @pending_bytes << c
       if _rl_get_char_len(@pending_bytes) == -2
@@ -5592,7 +5591,6 @@ module RbReadline
       else
         incoming = @pending_bytes
         @pending_bytes = ''
-        incoming_length = incoming.length
       end
     end
 
