@@ -1,5 +1,7 @@
 require 'minitest/autorun'
 require 'rbreadline'
+require 'pty'
+require 'timeout'
 
 class TestRbReadline < Minitest::Test
   def test_versions
@@ -20,4 +22,84 @@ class TestRbReadline < Minitest::Test
   ensure
     RbReadline.instance_variable_set(:@encoding_name, encoding_name)
   end if defined?(Encoding)
+
+  # Tests inside a pty/pts system
+  # The test does one basic input, and one using escape sequences
+  def test_pts
+    usr_saw = [] # save all output to here from the user thread
+   Timeout::timeout(10) do # timeout in case read hangs
+      m, s = PTY.open # generate a new pty/pts pair
+
+      f = Thread.new do # the user thread to manage the master of the pair (pty)
+        # normal entry
+        str = String.new
+        loop do # read the prompt in
+          t = m.read(1)
+          str << t
+          break if t == " "
+        end
+        usr_saw << str
+        m.puts "pty hello!"
+        sleep 0.2
+        usr_saw << m.gets # rawified pty hello
+
+        # now use the up arrow and home key, saving output after each
+        str = String.new
+        loop do # read the prompt in
+          t = m.read(1)
+          str << t
+          break if t == " "
+        end
+        usr_saw << str
+        m.print "\e[A"
+        sleep 0.2 #sleeps are to avoid long sequences being cut in half with readpartial
+        usr_saw << m.readpartial(100) # original
+
+        m.print "up"
+        sleep 0.2
+        usr_saw << m.readpartial(100) # up
+
+        m.print "\e[H"
+        sleep 0.1
+        usr_saw << m.readpartial(100) # move to start
+
+        "and: ".each_char do |ch|
+          m.print ch
+          sleep 0.1
+          usr_saw << m.readpartial(100) # apty..., npty..., etc
+        end
+
+        m.puts ""
+        sleep 0.2
+        usr_saw << m.gets # rawified pty hello
+      end
+
+      # assign the readline io to the slave of the pair (pts)
+      RbReadline.rl_instream = s
+      RbReadline.rl_outstream = s
+
+      # normal entry
+      read = RbReadline.readline('pts> ')
+      assert_equal("pty hello!", read)
+      RbReadline.add_history(read)
+
+      # up arrow
+      read = RbReadline.readline('2pts2> ')
+      assert_equal("and: pty hello!up", read)
+    end
+    sleep 1 # wait for user thread to exit
+    prompt_rights = "\e[C" * "2pts2> ".length # the right arrow to move past the prompt
+
+    # validate the user saw everything we expected
+    assert_equal(["pts> ", "pty hello!\r\r\n",
+    "2pts2> ", "pty hello!" , # up arrow
+      "up", #"up"
+      "\r#{prompt_rights}", # home key
+      "apty hello!up\r#{prompt_rights}#{"\e[C"*1}", #a
+      "npty hello!up\r#{prompt_rights}#{"\e[C"*2}", #n
+      "dpty hello!up\r#{prompt_rights}#{"\e[C"*3}", #d
+      ":pty hello!up#{"\b" * 12}", #:
+      " pty hello!up#{"\b" * 12}", #" "
+      "\r\r\n"], usr_saw) # output should not see anything else
+  end
 end
