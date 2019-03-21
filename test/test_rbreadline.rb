@@ -24,10 +24,11 @@ class TestRbReadline < Minitest::Test
   end if defined?(Encoding)
 
   # Tests inside a pty/pts system
-  # The test does one basic input, and one using escape sequences
+  # The test does one basic input, one using escape sequences, one using
+  # reverse search, and one that exits reverse search
   def test_pts
     usr_saw = [] # save all output to here from the user thread
-   Timeout::timeout(10) do # timeout in case read hangs
+    Timeout::timeout(10) do # timeout in case read hangs
       m, s = PTY.open # generate a new pty/pts pair
 
       f = Thread.new do # the user thread to manage the master of the pair (pty)
@@ -72,6 +73,56 @@ class TestRbReadline < Minitest::Test
         m.puts ""
         sleep 0.2
         usr_saw << m.gets # rawified pty hello
+
+        # search with success
+        str = String.new
+        loop do # read the prompt in
+          t = m.read(1)
+          str << t
+          break if t == " "
+        end
+        usr_saw << str
+
+        m.print "\C-r" # reverse search
+        sleep 0.2
+        usr_saw << m.readpartial(100) # prompt
+
+        m.print "d"
+        sleep 0.2
+        usr_saw << m.readpartial(100) # find
+
+        m.print "\e[D" # left
+        sleep 0.2
+        usr_saw << m.readpartial(200) # accept suggestion
+
+        m.puts ""
+        sleep 0.2
+        usr_saw << m.gets # rawified pty hello
+
+        # search with excape
+        str = String.new
+        loop do # read the prompt in
+          t = m.read(1)
+          str << t
+          break if t == " "
+        end
+        usr_saw << str
+
+        m.print "\C-r" # reverse search
+        sleep 0.2
+        usr_saw << m.readpartial(100) # prompt
+
+        m.print "\e" # escape
+        sleep 0.2
+        usr_saw << m.readpartial(100) # esc
+
+        m.print "d"
+        sleep 0.2
+        usr_saw << m.readpartial(100) # just d
+
+        m.puts ""
+        sleep 0.2
+        usr_saw << m.gets # rawified pty hello
       end
 
       # assign the readline io to the slave of the pair (pts)
@@ -86,6 +137,16 @@ class TestRbReadline < Minitest::Test
       # up arrow
       read = RbReadline.readline('2pts2> ')
       assert_equal("and: pty hello!up", read)
+
+      # search
+      RbReadline.add_history("don quixote")
+      read = RbReadline.readline('3pts% ')
+      assert_equal("don quixote", read)
+
+      # search escape
+      RbReadline.add_history("don quixote")
+      read = RbReadline.readline('4pts$ ')
+      assert_equal("d", read)
     end
     sleep 1 # wait for user thread to exit
     prompt_rights = "\e[C" * "2pts2> ".length # the right arrow to move past the prompt
@@ -100,6 +161,16 @@ class TestRbReadline < Minitest::Test
       "dpty hello!up\r#{prompt_rights}#{"\e[C"*3}", #d
       ":pty hello!up#{"\b" * 12}", #:
       " pty hello!up#{"\b" * 12}", #" "
+      "\r\r\n",
+    "3pts% ",  #prompt
+      "\r(reverse-i-search)`': ",  #ctrl-R
+      "\b\b\bd': don quixote#{"\b" * "don quixote".length}", #d
+      "\r#{"\e[P" * 17}3pts%\e[C",  #accept
+      "\r\r\n",
+    "4pts$ ", #prompt
+      "\r(reverse-i-search)`': ",  #ctrl-R
+      "\r4pts$ \e[K", # esc
+      "d",
       "\r\r\n"], usr_saw) # output should not see anything else
   end
 end

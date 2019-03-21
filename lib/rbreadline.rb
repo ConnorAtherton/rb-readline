@@ -4058,7 +4058,7 @@ module RbReadline
   end
 
   def _rl_input_available
-    IO.select([ $stdin ], nil, [ $stdin ], @_keyboard_input_timeout)
+    IO.select([ @rl_instream ], nil, [ @rl_instream ], @_keyboard_input_timeout)
   end
 
   # Process just-read character C according to isearch context CXT.  Return
