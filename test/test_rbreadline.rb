@@ -32,97 +32,34 @@ class TestRbReadline < Minitest::Test
       m, s = PTY.open # generate a new pty/pts pair
 
       f = Thread.new do # the user thread to manage the master of the pair (pty)
-        # normal entry
-        str = String.new
-        loop do # read the prompt in
-          t = m.read(1)
-          str << t
-          break if t == " "
+        first = true
+        sequences = [ # comma-seperated key sequences
+          "pty hello!\n", #normal entry
+          "\e[A,up,\e[H,a,n,d,:, ,\n", # up arrow, "up", home key, "and: "
+          "\C-r,d,\e[D,\n", # ^R (reverse search), d, left arrow (accept), enter
+          "\C-r,\e,d,\n", # ^R, escape key, d, enter
+        ]
+        sequences.each do |seqcsv|
+          # normal entry
+          str = String.new
+          # read the prompt in
+          loop do
+            t = m.read(1)
+            str << t
+            break if t == " "
+          end
+          if first # remove startup sequences from some terms
+            first = false
+            str = str[(str.rindex("pts> ") || 0)..-1] #trim startup sequence
+          end
+          usr_saw << str
+          # send output after prompt for each key sequence
+          seqcsv.split(",").each do |chars|
+            m.print chars
+            sleep 0.1
+            usr_saw << (chars.end_with?("\n") ? m.gets : m.readpartial(200))
+          end
         end
-        usr_saw << str
-        m.puts "pty hello!"
-        sleep 0.2
-        usr_saw << m.gets # rawified pty hello
-
-        # now use the up arrow and home key, saving output after each
-        str = String.new
-        loop do # read the prompt in
-          t = m.read(1)
-          str << t
-          break if t == " "
-        end
-        usr_saw << str
-        m.print "\e[A"
-        sleep 0.2 #sleeps are to avoid long sequences being cut in half with readpartial
-        usr_saw << m.readpartial(100) # original
-
-        m.print "up"
-        sleep 0.2
-        usr_saw << m.readpartial(100) # up
-
-        m.print "\e[H"
-        sleep 0.1
-        usr_saw << m.readpartial(100) # move to start
-
-        "and: ".each_char do |ch|
-          m.print ch
-          sleep 0.1
-          usr_saw << m.readpartial(100) # apty..., npty..., etc
-        end
-
-        m.puts ""
-        sleep 0.2
-        usr_saw << m.gets # rawified pty hello
-
-        # search with success
-        str = String.new
-        loop do # read the prompt in
-          t = m.read(1)
-          str << t
-          break if t == " "
-        end
-        usr_saw << str
-
-        m.print "\C-r" # reverse search
-        sleep 0.2
-        usr_saw << m.readpartial(100) # prompt
-
-        m.print "d"
-        sleep 0.2
-        usr_saw << m.readpartial(100) # find
-
-        m.print "\e[D" # left
-        sleep 0.2
-        usr_saw << m.readpartial(200) # accept suggestion
-
-        m.puts ""
-        sleep 0.2
-        usr_saw << m.gets # rawified pty hello
-
-        # search with excape
-        str = String.new
-        loop do # read the prompt in
-          t = m.read(1)
-          str << t
-          break if t == " "
-        end
-        usr_saw << str
-
-        m.print "\C-r" # reverse search
-        sleep 0.2
-        usr_saw << m.readpartial(100) # prompt
-
-        m.print "\e" # escape
-        sleep 0.2
-        usr_saw << m.readpartial(100) # esc
-
-        m.print "d"
-        sleep 0.2
-        usr_saw << m.readpartial(100) # just d
-
-        m.puts ""
-        sleep 0.2
-        usr_saw << m.gets # rawified pty hello
       end
 
       # assign the readline io to the slave of the pair (pts)
