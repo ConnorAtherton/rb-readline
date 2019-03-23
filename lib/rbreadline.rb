@@ -8919,7 +8919,10 @@ module RbReadline
   # calls the given program with stdin set to the input stream
   # and returns stdout
   def io_exec(args)
-    IO.popen(args, in: @rl_instream) do |io|
+    sane_config = {} # default, not stdin if @rl_instream doesn't have a file descriptor, or we might get stdin closed errors
+    sane_config[:in] = @rl_instream if @rl_instream.respond_to?(:fileno) && !@rl_instream.fileno.nil?
+
+    IO.popen(args, sane_config) do |io|
       result = String.new
       until io.eof?
         tmp = io.read
