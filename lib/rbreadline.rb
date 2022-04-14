@@ -1820,7 +1820,7 @@ module RbReadline
 
   def get_term_capabilities(buffer)
     hash = {}
-      `infocmp -C`.split(':').select{|x| x =~ /(.*)=(.*)/ and hash[$1]=$2.gsub("\\r", "\r").gsub('\\E',"\e").gsub(/\^(.)/){($1[0].ord ^ ((?a..?z).include?($1[0]) ? 0x60 : 0x40)).chr}}
+      io_exec(%w{infocmp -C}).split(':').select{|x| x =~ /(.*)=(.*)/ and hash[$1]=$2.gsub("\\r", "\r").gsub('\\E',"\e").gsub(/\^(.)/){($1[0].ord ^ ((?a..?z).include?($1[0]) ? 0x60 : 0x40)).chr}}
       @_rl_term_at7          =     hash["@7"]
       @_rl_term_DC           =     hash["DC"]
       @_rl_term_IC           =     hash["IC"]
@@ -1876,7 +1876,7 @@ module RbReadline
     else
       wr, wc = 0
       retry_if_interrupted do
-        wr, wc = `stty size`.split(' ').map { |x| x.to_i }
+        wr, wc = io_exec(%w{stty size}).split(' ').map { |x| x.to_i }
       end
       @_rl_screenwidth = wc
       @_rl_screenheight = wr
@@ -1907,7 +1907,7 @@ module RbReadline
   end
 
   def tgetflag(name)
-      `infocmp -C -r`.scan(/\w{2}/).include?(name)
+      io_exec(%w{infocmp -C -r}).scan(/\w{2}/).include?(name)
   end
 
   # Return the function (or macro) definition which would be invoked via
@@ -2066,7 +2066,7 @@ module RbReadline
   def rl_tty_set_default_bindings(kmap)
     h = {}
     retry_if_interrupted do
-      h = Hash[*`stty -a`.scan(/(\w+) = ([^;]+);/).flatten]
+      h = Hash[*io_exec(%w{stty -a}).scan(/(\w+) = ([^;]+);/).flatten]
     end
     h.each {|k,v| v.gsub!(/\^(.)/){($1[0].ord ^ ((?a..?z).include?($1[0]) ? 0x60 : 0x40)).chr}}
     kmap[h['erase']] = :rl_rubout
@@ -4066,7 +4066,7 @@ module RbReadline
   end
 
   def _rl_input_available
-    IO.select([ $stdin ], nil, [ $stdin ], @_keyboard_input_timeout)
+    IO.select([ @rl_instream ], nil, [ @rl_instream ], @_keyboard_input_timeout)
   end
 
   # Process just-read character C according to isearch context CXT.  Return
@@ -4483,7 +4483,7 @@ module RbReadline
     @pending_key = nil
 
     begin
-      case `chcp`.scan(/\d+$/).first.to_i
+      case io_exec("chcp").scan(/\d+$/).first.to_i
       when 936,949,950,51932,51936,50225
         @encoding = "E"
       when 932,50220,50221,20222
@@ -6971,7 +6971,7 @@ module RbReadline
     @_rl_last_tty_chars = @_rl_tty_chars
     h = {}
     retry_if_interrupted do
-      h = Hash[*`stty -a`.scan(/(\w+) = ([^;]+);/).flatten]
+      h = Hash[*io_exec(%w{stty -a}).scan(/(\w+) = ([^;]+);/).flatten]
     end
     h.each {|k,v| v.gsub!(/\^(.)/){($1[0].ord ^ ((?a..?z).include?($1[0]) ? 0x60 : 0x40)).chr}}
     @_rl_tty_chars.t_erase = h['erase']
@@ -6991,7 +6991,7 @@ module RbReadline
     @_rl_tty_chars.t_lnext = h['lnext']
     @_rl_tty_chars.t_status = -1
     retry_if_interrupted do
-      @otio = `stty -g`
+      @otio = io_exec(%w{stty -g})
     end
   end
 
@@ -7004,7 +7004,7 @@ module RbReadline
 
   def prepare_terminal_settings(meta_flag)
     retry_if_interrupted do
-      @readline_echoing_p = (`stty -a`.scan(/-*echo\b/).first == 'echo')
+      @readline_echoing_p = (io_exec(%w{stty -a}).scan(/-*echo\b/).first == 'echo')
     end
 
     # First, the basic settings to put us into character-at-a-time, no-echo
@@ -7015,7 +7015,7 @@ module RbReadline
     #   use it for the meta-key.  If only one of even or odd parity is
     #  specified, then the terminal is using parity, and we cannot.
     retry_if_interrupted do
-      if (`stty -a`.scan(/-parenb\b/).first == '-parenb')
+      if (io_exec(%w{stty -a}).scan(/-parenb\b/).first == '-parenb')
         setting << " pass8"
       end
     end
@@ -7028,7 +7028,7 @@ module RbReadline
     #setting << " -isig"
 
     retry_if_interrupted do
-      `stty #{setting}`
+      io_exec("stty #{setting}".split " ")
     end
   end
 
@@ -7117,7 +7117,7 @@ module RbReadline
 
     # restore terminal setting
     retry_if_interrupted do
-      `stty #{@otio}`
+      io_exec("stty #{@otio}".split " ")
     end
 
     @terminal_prepped = false
@@ -8921,6 +8921,22 @@ module RbReadline
     term = ENV["TERM"]
     term.nil? || (term == 'dumb') || (RUBY_PLATFORM =~ /mswin|mingw/)
   end
-  private :no_terminal?
+
+  # calls the given program with stdin set to the input stream
+  # and returns stdout
+  def io_exec(args)
+    sane_config = {} # default, not stdin if @rl_instream doesn't have a file descriptor, or we might get stdin closed errors
+    sane_config[:in] = @rl_instream if @rl_instream.respond_to?(:fileno) && !@rl_instream.fileno.nil?
+
+    IO.popen(args, sane_config) do |io|
+      result = String.new
+      until io.eof?
+        tmp = io.read
+        result << tmp unless tmp.nil?
+      end
+      result
+    end
+  end
+  private :no_terminal?, :io_exec
 
 end
