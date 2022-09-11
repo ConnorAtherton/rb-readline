@@ -10,8 +10,10 @@
 
 require "rbreadline/version"
 
-class Integer
-  def ord; self; end
+unless Integer.instance_methods(true).include?(:ord)
+  class Integer
+    def ord; self; end
+  end
 end
 
 module RbReadline
@@ -3482,7 +3484,7 @@ module RbReadline
         if (!@rl_byte_oriented)
           _rl_wrapped_multicolumn = 0
           if (@_rl_screenwidth < lpos + wc_width)
-            for i in lpos ... @_rl_screenwidth
+            (lpos ... @_rl_screenwidth).each do
               # The space will be removed in update_line()
               line[out,1] = ' '
               out += 1
@@ -3501,7 +3503,7 @@ module RbReadline
           end
           line[out,wc_bytes] = @rl_line_buffer[_in,wc_bytes]
           out += wc_bytes
-          for i in 0 ... wc_width
+          (0 ... wc_width).each do
             lpos+=1
             if (lpos >= @_rl_screenwidth)
               @inv_lbreaks[newlines+=1] = out
