@@ -10,8 +10,10 @@
 
 require "rbreadline/version"
 
-class Integer
-  def ord; self; end
+unless Integer.instance_methods(true).include?(:ord)
+  class Integer
+    def ord; self; end
+  end
 end
 
 module RbReadline
